@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>triesteLink</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+        #map { height: 500px; width: 100%; }
+    </style>
+</head>
+<body>
+    <h1>Monitoraggio Autobus Trieste</h1>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+        // Inizializza la mappa
+        var map = L.map('map').setView([45.6495, 13.7768], 13); // Coordinate Trieste
+
+        // Aggiunge il layer di OpenStreetMap
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Aggiunge un marker di esempio
+        L.marker([45.6495, 13.7768]).addTo(map)
+            .bindPopup("Centro di Trieste")
+            .openPopup();
+    </script>
+</body>
+</html>
