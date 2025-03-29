@@ -43,7 +43,7 @@ async function getBusStops17() {
     busStopsLayer.clearLayers(); // Pulisce fermate precedenti
 
     const query = `[out:json];
-        node["highway"="bus_stop"](268201214);
+        node["highway"="bus_stop"](id:268201214, 627851056, 627851058, 627851059,  627851062,  627851064,  273840241, 273840235, 273840233, 270561142, 4530646129, 281171668);
         out body;`;
 
     const url = "https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query);
