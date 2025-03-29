@@ -41,7 +41,7 @@ out body;
 
 Ora: selezionando solo una linea (partiamo dalla 17 perchè la conosco a memoria), e, mettendo la freccia su via del coroneo (per esempio), avremo varie relazioni, che vanno dal flixbus, a linee regionali. Ora ovviamente a noi interessa solo la 17, quindi, confrontando con l'immagine
 ![alt text](image.png)
-vediamo che le relazioni per la 17 sono: 13300193 e 13300195 (per la 17/).
+vediamo che le relazioni per la 17 sono: 13300193,13300194 e 13300195,13307218 (per la 17/).
 Ottenute le relazioni, posso andare su overpass, usare la query
 ```query 
 [out:json];
@@ -51,3 +51,5 @@ out body;
 ```
 ed importare le linee della 17 e 17/.
 ![alt text](image-1.png) infatti
+
+Per ora non so una beca di js, quindi ho semplicemente importato la 17 colorandola di blu,  e disattivando le fermate
