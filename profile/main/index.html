@@ -5,13 +5,39 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>triesteLink</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <style>
-        #map { height: 500px; width: 100%; }
-    </style>
+    <link rel="stylesheet" href="style.css" /> <!-- Collegamento al CSS esterno -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <h1>Monitoraggio Autobus Trieste</h1>
+    <!-- Barra superiore con titolo centrato e bottoni a destra -->
+    <div class="top-bar">
+        <h1>TriesteLink</h1>
+        <div class="top-buttons">
+            <button onclick="toggleTheme()">🌙</button>
+            <button onclick="showInfo()">ℹ️</button>
+        </div>
+    </div>
+
     <div id="map"></div>
+
+    <!-- Barra di navigazione -->
+    <div class="nav-bar">
+        <button onclick="showMap()">🗺️ <span class="nav-text">Mappa</span></button>
+        <button onclick="showBusList()">🚌 <span class="nav-text">Lista Autobus</span></button>
+        <button onclick="findStop()">📍 <span class="nav-text">Trova Fermata</span></button>
+    </div>
+
+    <!-- Finestra con la lista degli autobus -->
+    <div id="bus-list" class="bus-list-container">
+        <button onclick="closeBusList()" class="close-btn">❌</button>
+        <h2>Lista Autobus</h2>
+        <ul id="bus-list-content">
+            <!-- Gli autobus verranno popolati dinamicamente -->
+            <li>Linea 17</li>
+            <li>Linea 17/</li>
+            <li>ciao</li>
+        </ul>
+    </div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
@@ -22,9 +48,37 @@
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; OpenStreetMap contributors'
         }).addTo(map);
+
+        function showBusList() {
+            document.getElementById('bus-list').style.transform = 'translateY(0)';
+        }
+
+        function closeBusList() {
+            document.getElementById('bus-list').style.transform = 'translateY(100%)';
+        }
     </script>
-    <!-- <script src=bustop.js></script> -->
-    <script src=17.js></script>
-    <script src=17b.js></script>
+    <script src="17.js"></script>
+    <script src="17b.js"></script>
+
+    <script>
+        // Controlla il tema salvato e lo applica
+        if (localStorage.getItem("theme") === "dark") {
+            document.body.classList.add("dark-mode");
+        }
+    
+        function toggleTheme() {
+            document.body.classList.toggle("dark-mode");
+    
+            // Salva la preferenza dell'utente
+            if (document.body.classList.contains("dark-mode")) {
+                localStorage.setItem("theme", "dark");
+            } else {
+                localStorage.setItem("theme", "light");
+            }
+        }
+    </script>
+
 </body>
 </html>
+
+
