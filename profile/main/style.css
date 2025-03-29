@@ -45,6 +45,7 @@ button:hover {
     opacity: 0;
     transform: scale(0.95);
     animation: fadeIn 0.8s forwards;
+    width: 100%;
 }
 
 @keyframes fadeIn {
