@@ -22,6 +22,15 @@ out body;
 ```
 appunto, questa cerca i nodi che hanno il tag "highway"="bus_stop" per le fermate del bus.
 
+per ottimizzare la parte di selezionamento delle fermate, si può semplicemente importare la fermata in relazione alla linea, usando la seguente query:
+```query 
+[out:json];
+rel(id:13300193,13300194);  // Relazioni della linea 17
+node(r)->.stops;            // Trova i nodi (fermate) collegati alle relazioni
+.stops out body;            // Output delle fermate
+```
+Dato che come esempio uso la 17, in questo caso le fermate saranno in relazione alla linea 17.
+
 Poi con il js in pratica sistemo un marker per ogni fermata con il relativo nome in evidenza.
 
 ## Linee
