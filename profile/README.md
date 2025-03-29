@@ -27,3 +27,27 @@ Poi con il js in pratica sistemo un marker per ogni fermata con il relativo nome
 ## Linee
 
 Ora, le linee sono generalmente mappate come relazioni con il tag type=route e route=bus. Ora, questo comando purtroppo non mostra sulla mappa nessun tipo di segno visivo, ma rimanda in console svariate coordiante, quindi, presumo che saranno da tracciare a mano, utilzzando comandi (che devo ancora scoprire)
+
+Per tracciare tutte le linee e poterle vedere su openstreetmap con le relative relazioni (importanti per avere i dati di ogni singola linea), si può fare cosi
+```query 
+[out:json];
+area["name"="Trieste"]->.searchArea;
+(
+  relation["type"="route"]["route"="bus"](area.searchArea);
+)->.routes;
+(.routes; >;);
+out body;
+```
+
+Ora: selezionando solo una linea (partiamo dalla 17 perchè la conosco a memoria), e, mettendo la freccia su via del coroneo (per esempio), avremo varie relazioni, che vanno dal flixbus, a linee regionali. Ora ovviamente a noi interessa solo la 17, quindi, confrontando con l'immagine
+![alt text](image.png)
+vediamo che le relazioni per la 17 sono: 13300193 e 13300195 (per la 17/).
+Ottenute le relazioni, posso andare su overpass, usare la query
+```query 
+[out:json];
+rel(id:13300193, 13300195);
+(._; >;);
+out body;
+```
+ed importare le linee della 17 e 17/.
+![alt text](image-1.png) infatti
