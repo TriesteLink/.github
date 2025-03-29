@@ -1,1 +1,215 @@
+/* Stile generale */
+body {
+    font-family: 'Poppins', sans-serif;
+    padding-top: 70px; /* Altezza della barra superiore */
+    padding-bottom: 50px; /* Altezza della barra inferiore */
+    margin: 0;
+}
+
+/* Titolo */
+h1 {
+    color: white;
+    padding: 15px;
+    margin: 0;
+    font-size: 24px;
+}
+
+/* Contenitore della mappa */
+#map {
+    height: 80vh;
+    width: 90%;
+    margin: 20px auto;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Pulsanti e controlli (se aggiunti in futuro) */
+button {
+    padding: 10px 15px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* Hover per i bottoni */
+button:hover {
+    opacity: 0.8; /* Rende il bottone leggermente più trasparente */
+    box-shadow: 0px 3px 3px rgba(0, 0, 0, 1); /* Leggera ombra per l'effetto di profondità */
+}
+
+
+#map {
+    opacity: 0;
+    transform: scale(0.95);
+    animation: fadeIn 0.8s forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Stile per la barra superiore */
+.top-bar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background: #007bff;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Stile della barra inferiore */
+.nav-bar {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: #007bff;
+    display: flex;
+    justify-content: space-around;
+    padding: 10px 0;
+    box-shadow: 0px -2px 6px rgba(0, 0, 0, 0.2);
+}
+
+/* Stile dei bottoni */
+.top-bar button, .nav-bar button {
+    background: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* Testo in blu */
+.nav-text {
+    color: #007bff;
+    font-weight: bold;
+}
+
+/* Tema scuro */
+.dark-mode {
+    background-color: #1e1e1e;
+    color: white;
+}
+
+/* Cambia lo sfondo della barra superiore e inferiore in scuro */
+.dark-mode .top-bar, 
+.dark-mode .nav-bar {
+    background: #333;
+}
+
+/* Cambia il colore del titolo */
+.dark-mode h1 {
+    color: #f4f4f4;
+}
+
+/* Cambia i bottoni della barra in scuro */
+.dark-mode .top-bar button, 
+.dark-mode .nav-bar button {
+    background: #555;
+    color: white;
+}
+
+/* Cambia il colore della mappa per renderla più visibile */
+.dark-mode #map {
+    filter: invert(90%) hue-rotate(180deg);
+}
+
+/* Cambia il colore del testo nei bottoni */
+.dark-mode .nav-text {
+    color: #f4f4f4;
+}
+
+
+/* Stile per la finestra degli autobus */
+.bus-list-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 85%; /* La finestra copre metà dello schermo */
+    background-color: #007bff;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.3);
+    transform: translateY(100%); /* Nasconde la finestra all'inizio */
+    transition: transform 0.5s ease; /* Animazione per farla scorrere su */
+    padding: 20px;
+    overflow-y: auto; /* Per consentire lo scroll se la lista è lunga */
+}
+
+.bus-list-container h2 {
+    color: white;
+    font-size: 24px;
+    margin-bottom: 20px; /* Distanza dal contenuto */
+}
+
+/* Stile per il bottone di chiusura */
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+    position: absolute;
+    top: 15px;
+    right: 40px;
+}
+
+
+.close-btn:hover {
+    opacity: 0.7;
+}
+
+/* Stile della lista */
+#bus-list-content {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+#bus-list-content li {
+    background: #f4f4f4;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.1);
+    word-wrap: break-word; /* Per evitare che il testo vada fuori dallo schermo */
+    max-width: 95%; /* Limita la larghezza per evitare di superare i bordi dello schermo */
+    margin-left: 2.5%; /* Centra i contenuti orizzontalmente */
+    margin-right: 7%; /* Centra i contenuti orizzontalmente */
+}
+
+/* Quando la finestra è visibile */
+.bus-list-container.show {
+    transform: translateY(0);
+}
+
+/* Dark mode specifico per la finestra degli autobus */
+.dark-mode .bus-list-container {
+    background-color: #333; /* Sfondo scuro */
+}
+
+.dark-mode .bus-list-container h2 {
+    color: #f4f4f4; /* Titolo in chiaro per visibilità */
+}
+
+.dark-mode .bus-list-container #bus-list-content li {
+    background: #555; /* Sfondo grigio scuro per ogni elemento della lista */
+    color: #f4f4f4; /* Testo chiaro */
+}
+
+.dark-mode .close-btn {
+    color: #f4f4f4; /* Colore della X in modalità scura */
+}
+
 
