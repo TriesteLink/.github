@@ -1,12 +1,14 @@
-
 // Aggiunge la mappa di base OpenStreetMap
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
+let busStopsLayer = L.layerGroup().addTo(map); // Layer per le fermate
+let routeLayer = null; // Layer per la linea 17
+
 async function getBusRoute17() {
     const query = `[out:json];
-    rel(id:13300193,13300194); // Relazioni della linea 17
+    rel(id:13300193,13300194);
     (._; >;);
     out body;`;
 
@@ -15,16 +17,50 @@ async function getBusRoute17() {
     try {
         let response = await fetch(url);
         let data = await response.json();
-
         let routesGeoJSON = osmToGeoJSON(data);
 
-        // Aggiunge il percorso della linea 17 in blu
-        L.geoJSON(routesGeoJSON, {
+        // Disegna la linea 17
+        routeLayer = L.geoJSON(routesGeoJSON, {
             style: { color: "blue", weight: 3 }
         }).addTo(map);
 
+        // Aggiunge evento di click per mostrare/nascondere fermate
+        routeLayer.on('click', function () {
+            if (map.hasLayer(busStopsLayer)) {
+                map.removeLayer(busStopsLayer);
+            } else {
+                getBusStops17(); // Mostra fermate
+            }
+        });
+
     } catch (error) {
         console.error("Errore nel caricamento della linea 17:", error);
+    }
+}
+
+// Funzione per ottenere le fermate della linea 17
+async function getBusStops17() {
+    busStopsLayer.clearLayers(); // Pulisce fermate precedenti
+
+    const query = `[out:json];
+        node["highway"="bus_stop"](268201214);
+        out body;`;
+
+    const url = "https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query);
+
+    try {
+        let response = await fetch(url);
+        let data = await response.json();
+
+        data.elements.forEach(node => {
+            let marker = L.marker([node.lat, node.lon]).bindPopup(node.tags.name || "Fermata Bus");
+            busStopsLayer.addLayer(marker);
+        });
+
+        map.addLayer(busStopsLayer); // Aggiunge fermate alla mappa
+
+    } catch (error) {
+        console.error("Errore nel caricamento delle fermate:", error);
     }
 }
 
@@ -52,5 +88,5 @@ function osmToGeoJSON(osmData) {
     return geojson;
 }
 
-// Carica il percorso della linea 17 sulla mappa
+// Carica la linea 17
 getBusRoute17();
