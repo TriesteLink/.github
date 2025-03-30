@@ -1,14 +1,14 @@
-# Cosa ci serve
+# COSA CI SERVE
 
 1. **Accesso ai dati in tempo reale**: Per fornire informazioni aggiornate sulla posizione degli autobus, quindi i servizi di TPL FVG, anche se so che non c'è un servizio libero per avere le loro API oubbliche 
 2. **Utilizzo di API di terze parti**: in caso sti cancari non le diano, trovare se ne esistono di terze parti.
 3. **Normative privacy**: per fare una cosa simile probabilmente sarebbe da contattare direttamete le utorità locali per capire dove siamo limitati e dove invece possiamo agire in tranquillità.
 
-# Pacchetti utilizzati
+# PACCHETTI UTILIZZATI
 
 Sto utilizzando OpenStreetMap (OSM) come "fornitore" di informazioni, avvalendomi della loro guida sul sito, comprese di librerie e API, per ora il pacchetto che sto utilizzando è **Leaflet.js**, essendo che utilizziamo javascript: è facile da utilizzare e e per le integrazioni, ed inoltre permette di aggiungere i marker per fermate e tracciare le linee, sarà utile se integreremo il tempo reale.
 
-# Overpass API
+# OVERPASS API
 ## Fermate
 
 Con [questo sito](https://overpass-turbo.eu/index.html) posso usare il sistema per ottenere tutti i dati specifici.
@@ -62,3 +62,7 @@ ed importare le linee della 17 e 17/.
 ![alt text](image-1.png) infatti
 
 Per ora non so una beca di js, quindi ho semplicemente importato la 17 colorandola di blu,  e disattivando le fermate
+# ORGANIZZAZIONE CODICE
+## mapConfig.js
+
+Contiene tutti i dati globali che servono per tutte le linee, in modo da importarli una volta e richiamarli solo quando necessario. Questo permetterà di creare un file per ogni linea (1,2,....17,...) e utilizzare il pacchetto solamente richiamandolo, senza dover creare una funzione per ogni file, sia per snellire il codice, sia per evitare errori di conflitto
