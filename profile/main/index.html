@@ -40,15 +40,10 @@
     </div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="mapConfig.js"></script>
+    <script src="17.js"></script>
+
     <script>
-        // Inizializza la mappa
-        var map = L.map('map').setView([45.6495, 13.7768], 13); // Coordinate Trieste
-
-        // Aggiunge il layer di OpenStreetMap
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
-
         function showBusList() {
             document.getElementById('bus-list').style.transform = 'translateY(0)';
         }
@@ -57,7 +52,6 @@
             document.getElementById('bus-list').style.transform = 'translateY(100%)';
         }
     </script>
-    <script src="17.js"></script>
 
     <script>
         // Controlla il tema salvato e lo applica
@@ -76,8 +70,5 @@
             }
         }
     </script>
-
 </body>
 </html>
-
-
