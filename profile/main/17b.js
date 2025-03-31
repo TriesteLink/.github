@@ -37,10 +37,15 @@ async function getBusRoute17B() {
 
 // Funzione per ottenere le fermate della linea 17B
 async function getBusStops17B() {
+    // Rimuove le fermate della linea precedente, se presenti
+    if (window.activeBusStopsLayer) {
+        window.map.removeLayer(window.activeBusStopsLayer);
+    }
+
     window.busStopsLayer17B.clearLayers(); // Pulisce fermate precedenti
 
     const query = `[out:json];
-rel(id:13307218,13300195);  // Relazioni della linea 17B
+rel(id:13307218,13300195);  // Relazioni della linea 17b
 node(r)->.stops;            // Trova i nodi (fermate) collegati alle relazioni
 .stops out body;            // Output delle fermate`;
 
@@ -52,11 +57,14 @@ node(r)->.stops;            // Trova i nodi (fermate) collegati alle relazioni
 
         data.elements.forEach(node => {
             let marker = L.marker([node.lat, node.lon])
-                .bindPopup(node.tags.name || "Fermata 17B");
+                .bindPopup(node.tags.name || "Fermata 17/");
             window.busStopsLayer17B.addLayer(marker);
         });
 
         window.map.addLayer(window.busStopsLayer17B); // Aggiunge fermate alla mappa
+
+        // Imposta il layer attivo su questa linea
+        window.activeBusStopsLayer = window.busStopsLayer17B;
 
     } catch (error) {
         console.error("Errore nel caricamento delle fermate:", error);

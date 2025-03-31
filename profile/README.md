@@ -66,3 +66,7 @@ Per ora non so una beca di js, quindi ho semplicemente importato la 17 colorando
 ## mapConfig.js
 
 Contiene tutti i dati globali che servono per tutte le linee, in modo da importarli una volta e richiamarli solo quando necessario. Questo permetterà di creare un file per ogni linea (1,2,....17,...) e utilizzare il pacchetto solamente richiamandolo, senza dover creare una funzione per ogni file, sia per snellire il codice, sia per evitare errori di conflitto
+
+# PROBLEMI NOTI (da risolvere)
+## Linee
+Per ora tutte si comportano come devono, ovvero ogni linea, quando richiamata, mostra le sue fermate, e nel caso ci sia un'altra linea mostrata, nasconde le fermate della linea precedente, mostrando la linea nuova, tranne che per la 17
