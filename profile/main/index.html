@@ -115,8 +115,14 @@
                 (position) => {
                     const { latitude, longitude } = position.coords;
 
+                    var sonqua = L.icon({
+                        iconUrl: 'imhere.png',
+                        iconSize: [40, 40], // Dimensioni dell'icona
+                        iconAnchor: [20, 40], // Punto di ancoraggio dell'icona
+                        popupAnchor: [0, -40] // Punto di ancoraggio del popup
+                    })
                     // Aggiungi un marker sulla mappa
-                    const marker = L.marker([latitude, longitude]).addTo(map);
+                    const marker = L.marker([latitude, longitude], {icon: sonqua}).addTo(map);
                     marker.bindPopup("Sei qui!").openPopup();
 
                     // Centra la mappa sulla posizione
