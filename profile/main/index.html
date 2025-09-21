@@ -273,15 +273,57 @@
             }
         }
 
-        // Funzione per mostrare messaggio di caricamento
-        function showLoadingMessage(message) {
+        // Funzione per il pulsante "Mappa" - Pulisce e resetta la mappa
+        function showMap() {
+            // Effetto visivo sul pulsante
+            const mapButton = document.querySelector('button[onclick="showMap()"]');
+            if (mapButton) {
+                mapButton.classList.add('map-reset-active');
+                setTimeout(() => {
+                    mapButton.classList.remove('map-reset-active');
+                }, 600);
+            }
+
+            // 1. Nascondi tutte le linee e fermate
+            hideAllLines();
+            
+            // 2. Rimuovi eventuali marker di geolocalizzazione
+            clearLocationMarkers();
+            
+            // 3. Reset vista mappa alle coordinate iniziali di Trieste
+            window.map.setView([45.6495, 13.7768], 13, {
+                animate: true,
+                duration: 1.0 // Animazione smooth di 1 secondo
+            });
+            
+            // 4. Feedback visivo
+            showToast("Mappa resettata alla vista iniziale", "#007bff");
+        }
+
+        // Funzione per rimuovere marker di geolocalizzazione
+        function clearLocationMarkers() {
+            // Cerca e rimuovi tutti i marker con l'icona personalizzata "imhere.png"
+            window.map.eachLayer(function(layer) {
+                if (layer instanceof L.Marker) {
+                    // Controlla se è un marker di geolocalizzazione
+                    if (layer.options.icon && layer.options.icon.options && 
+                        layer.options.icon.options.iconUrl && 
+                        layer.options.icon.options.iconUrl.includes('imhere.png')) {
+                        window.map.removeLayer(layer);
+                    }
+                }
+            });
+        }
+
+        // Funzione per mostrare toast message migliorata
+        function showToast(message, color = "#007bff") {
             // Crea un toast message temporaneo
             const toast = document.createElement('div');
             toast.style.cssText = `
                 position: fixed;
                 top: 80px;
                 right: 20px;
-                background: #007bff;
+                background: ${color};
                 color: white;
                 padding: 12px 20px;
                 border-radius: 5px;
@@ -292,30 +334,39 @@
             `;
             toast.textContent = message;
 
-            // Aggiunge l'animazione CSS
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes slideIn {
-                    from { transform: translateX(100%); opacity: 0; }
-                    to { transform: translateX(0); opacity: 1; }
-                }
-            `;
-            document.head.appendChild(style);
+            // Aggiunge l'animazione CSS se non esiste già
+            if (!document.getElementById('toast-animations')) {
+                const style = document.createElement('style');
+                style.id = 'toast-animations';
+                style.textContent = `
+                    @keyframes slideIn {
+                        from { transform: translateX(100%); opacity: 0; }
+                        to { transform: translateX(0); opacity: 1; }
+                    }
+                    @keyframes slideOut {
+                        from { transform: translateX(0); opacity: 1; }
+                        to { transform: translateX(100%); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
 
             document.body.appendChild(toast);
 
             // Rimuove il toast dopo 3 secondi
             setTimeout(() => {
-                toast.style.animation = 'slideIn 0.3s ease-out reverse';
+                toast.style.animation = 'slideOut 0.3s ease-out';
                 setTimeout(() => {
                     if (document.body.contains(toast)) {
                         document.body.removeChild(toast);
                     }
-                    if (document.head.contains(style)) {
-                        document.head.removeChild(style);
-                    }
                 }, 300);
             }, 3000);
+        }
+
+        // Funzione per mostrare messaggio di caricamento (usa la nuova showToast)
+        function showLoadingMessage(message) {
+            showToast(message, "#28a745"); // Verde per indicare successo
         }
 
         // Genera la lista quando la pagina è caricata
