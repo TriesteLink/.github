@@ -153,8 +153,20 @@
                 
                 // Aggiunge event listener per il click
                 li.addEventListener('click', function() {
+                    // Feedback visivo immediato
+                    li.style.backgroundColor = line.color;
+                    li.style.color = 'white';
+                    li.innerHTML = `${line.displayName} - Caricamento...`;
+                    
                     loadBusLine(line);
                     closeBusList(); // Chiude la lista dopo aver selezionato
+                    
+                    // Ripristina l'aspetto originale dopo 2 secondi
+                    setTimeout(() => {
+                        li.innerHTML = line.displayName;
+                        li.style.backgroundColor = '';
+                        li.style.color = '';
+                    }, 2000);
                 });
 
                 // Effetto hover
@@ -175,31 +187,62 @@
             // Nasconde tutte le altre linee attive prima di caricare la nuova
             hideAllLines();
             
-            // Carica la linea specifica
+            // Carica la linea specifica E le sue fermate automaticamente
             switch(line.number) {
                 case "6":
                     if (typeof getBusRoute6 === 'function') {
                         getBusRoute6();
+                        // Carica automaticamente le fermate dopo un breve delay per assicurarsi che la linea sia caricata
+                        setTimeout(() => {
+                            if (typeof getBusStops6 === 'function') {
+                                getBusStops6();
+                                showLoadingMessage(`Linea ${line.number} caricata con fermate!`);
+                            }
+                        }, 1000);
                     }
                     break;
                 case "9":
                     if (typeof getBusRoute9 === 'function') {
                         getBusRoute9();
+                        setTimeout(() => {
+                            if (typeof getBusStops9 === 'function') {
+                                getBusStops9();
+                                showLoadingMessage(`Linea ${line.number} caricata con fermate!`);
+                            }
+                        }, 1000);
                     }
                     break;
                 case "17":
                     if (typeof getBusRoute17 === 'function') {
                         getBusRoute17();
+                        setTimeout(() => {
+                            if (typeof getBusStops17 === 'function') {
+                                getBusStops17();
+                                showLoadingMessage(`Linea ${line.number} caricata con fermate!`);
+                            }
+                        }, 1000);
                     }
                     break;
                 case "17/":
                     if (typeof getBusRoute17B === 'function') {
                         getBusRoute17B();
+                        setTimeout(() => {
+                            if (typeof getBusStops17B === 'function') {
+                                getBusStops17B();
+                                showLoadingMessage(`Linea ${line.number} caricata con fermate!`);
+                            }
+                        }, 1000);
                     }
                     break;
                 case "36":
                     if (typeof getBusRoute36 === 'function') {
                         getBusRoute36();
+                        setTimeout(() => {
+                            if (typeof getBusStops36 === 'function') {
+                                getBusStops36();
+                                showLoadingMessage(`Linea ${line.number} caricata con fermate!`);
+                            }
+                        }, 1000);
                     }
                     break;
             }
@@ -228,6 +271,51 @@
             if (window.activeBusStopsLayer && window.map.hasLayer(window.activeBusStopsLayer)) {
                 window.map.removeLayer(window.activeBusStopsLayer);
             }
+        }
+
+        // Funzione per mostrare messaggio di caricamento
+        function showLoadingMessage(message) {
+            // Crea un toast message temporaneo
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                top: 80px;
+                right: 20px;
+                background: #007bff;
+                color: white;
+                padding: 12px 20px;
+                border-radius: 5px;
+                z-index: 1001;
+                font-size: 14px;
+                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+                animation: slideIn 0.3s ease-out;
+            `;
+            toast.textContent = message;
+
+            // Aggiunge l'animazione CSS
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideIn {
+                    from { transform: translateX(100%); opacity: 0; }
+                    to { transform: translateX(0); opacity: 1; }
+                }
+            `;
+            document.head.appendChild(style);
+
+            document.body.appendChild(toast);
+
+            // Rimuove il toast dopo 3 secondi
+            setTimeout(() => {
+                toast.style.animation = 'slideIn 0.3s ease-out reverse';
+                setTimeout(() => {
+                    if (document.body.contains(toast)) {
+                        document.body.removeChild(toast);
+                    }
+                    if (document.head.contains(style)) {
+                        document.head.removeChild(style);
+                    }
+                }, 300);
+            }, 3000);
         }
 
         // Genera la lista quando la pagina è caricata
