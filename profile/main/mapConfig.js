@@ -1,18 +1,10 @@
 // Inizializza la mappa e la rende globale
 var map = L.map('map').setView([45.6495, 13.7768], 13); // Coordinate di Trieste
 
-window.busStopsLayer = L.layerGroup(); 
-
 // Aggiunge il layer di OpenStreetMap
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
-
-// Layer globale per le fermate degli autobus
-var busStopsLayer = L.layerGroup().addTo(map);
-
-// Layer globale per il percorso degli autobus
-var routeLayer = null;
 
 // Converte i dati OSM in GeoJSON
 window.osmToGeoJSON = function (osmData) {

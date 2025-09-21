@@ -12,19 +12,19 @@ async function getBusRoute9() {
         let routesGeoJSON = window.osmToGeoJSON(data); 
 
         // Rimuove il layer della linea precedente, se presente
-        if (window.routeLayer) {
-            window.map.removeLayer(window.routeLayer);
+        if (window.routeLayer9) {
+            window.map.removeLayer(window.routeLayer9);
         }
 
-        // Crea un nuovo layer e assegnalo a window.routeLayer
-        window.routeLayer = L.geoJSON(routesGeoJSON, {
+        // Crea un nuovo layer e assegnalo a window.routeLayer9
+        window.routeLayer9 = L.geoJSON(routesGeoJSON, {
             style: { color: "orange", weight: 3 }
         }).addTo(window.map);
 
         // Aggiungi evento per mostrare/nascondere fermate
-        window.routeLayer.on('click', function () {
-            if (window.map.hasLayer(window.busStopsLayer)) {
-                window.map.removeLayer(window.busStopsLayer);
+        window.routeLayer9.on('click', function () {
+            if (window.map.hasLayer(window.busStopsLayer9)) {
+                window.map.removeLayer(window.busStopsLayer9);
             } else {
                 getBusStops9();
             }
@@ -41,7 +41,7 @@ async function getBusStops9() {
         window.map.removeLayer(window.activeBusStopsLayer);
     }
 
-    window.busStopsLayer.clearLayers();
+    window.busStopsLayer9.clearLayers();
 
     const query = `[out:json];
     rel(id:13297000,13297001);  
@@ -57,13 +57,13 @@ async function getBusStops9() {
         data.elements.forEach(node => {
             let marker = L.marker([node.lat, node.lon])
                 .bindPopup(node.tags.name || "Fermata 9");
-            window.busStopsLayer.addLayer(marker);
+            window.busStopsLayer9.addLayer(marker);
         });
 
-        window.map.addLayer(window.busStopsLayer);
+        window.map.addLayer(window.busStopsLayer9);
 
         // Imposta il layer attivo su questa linea
-        window.activeBusStopsLayer = window.busStopsLayer;
+        window.activeBusStopsLayer = window.busStopsLayer9;
 
     } catch (error) {
         console.error("Errore nel caricamento delle fermate:", error);
