@@ -48,6 +48,22 @@
 
     <div id="map"></div>
 
+    <!-- Pannello informativo della linea -->
+    <div id="line-info-panel" class="line-info-panel">
+        <div class="line-info-header">
+            <button class="line-info-close" onclick="closeLineInfoPanel()">✕</button>
+            <h3 id="line-title">
+                <span id="line-color-indicator" class="line-color-indicator"></span>
+                <span id="line-name">Linea</span>
+            </h3>
+        </div>
+        <div class="line-info-content">
+            <ul id="stops-list" class="stops-list">
+                <!-- Le fermate verranno popolate dinamicamente -->
+            </ul>
+        </div>
+    </div>
+
     <!-- Barra di navigazione -->
     <div class="nav-bar">
         <button onclick="showMap()">🗺️ <span class="nav-text">Mappa</span></button>
@@ -190,6 +206,9 @@
             // Nasconde tutte le altre linee attive prima di caricare la nuova
             hideAllLines();
             
+            // Mostra immediatamente il pannello con informazioni di base
+            showLineInfoPanel(line.number, line.color, []);
+            
             // Carica la linea specifica E le sue fermate automaticamente
             switch(line.number) {
                 case "2":
@@ -200,6 +219,11 @@
                             if (typeof getBusStops2 === 'function') {
                                 getBusStops2();
                                 showLoadingMessage(`Linea ${line.number} caricata con fermate!`);
+                                // Aggiorna il pannello con le fermate quando sono caricate
+                                setTimeout(() => {
+                                    // Le fermate sono ora caricate, aggiorna il pannello
+                                    loadStopsForPanel(line.number);
+                                }, 500);
                             }
                         }, 1000);
                     }
@@ -212,6 +236,9 @@
                             if (typeof getBusStops6 === 'function') {
                                 getBusStops6();
                                 showLoadingMessage(`Linea ${line.number} caricata con fermate!`);
+                                setTimeout(() => {
+                                    loadStopsForPanel(line.number);
+                                }, 500);
                             }
                         }, 1000);
                     }
@@ -223,6 +250,9 @@
                             if (typeof getBusStops9 === 'function') {
                                 getBusStops9();
                                 showLoadingMessage(`Linea ${line.number} caricata con fermate!`);
+                                setTimeout(() => {
+                                    loadStopsForPanel(line.number);
+                                }, 500);
                             }
                         }, 1000);
                     }
@@ -234,6 +264,9 @@
                             if (typeof getBusStops17 === 'function') {
                                 getBusStops17();
                                 showLoadingMessage(`Linea ${line.number} caricata con fermate!`);
+                                setTimeout(() => {
+                                    loadStopsForPanel(line.number);
+                                }, 500);
                             }
                         }, 1000);
                     }
@@ -245,6 +278,9 @@
                             if (typeof getBusStops17B === 'function') {
                                 getBusStops17B();
                                 showLoadingMessage(`Linea ${line.number} caricata con fermate!`);
+                                setTimeout(() => {
+                                    loadStopsForPanel(line.number);
+                                }, 500);
                             }
                         }, 1000);
                     }
@@ -256,6 +292,9 @@
                             if (typeof getBusStops36 === 'function') {
                                 getBusStops36();
                                 showLoadingMessage(`Linea ${line.number} caricata con fermate!`);
+                                setTimeout(() => {
+                                    loadStopsForPanel(line.number);
+                                }, 500);
                             }
                         }, 1000);
                     }
@@ -265,6 +304,9 @@
 
         // Funzione per nascondere tutte le linee attive
         function hideAllLines() {
+            // Chiude il pannello informativo
+            closeLineInfoPanel();
+            
             // Rimuove tutti i layer delle route
             if (window.routeLayer2 && window.map.hasLayer(window.routeLayer2)) {
                 window.map.removeLayer(window.routeLayer2);
@@ -305,10 +347,13 @@
             // 1. Nascondi tutte le linee e fermate
             hideAllLines();
             
-            // 2. Rimuovi eventuali marker di geolocalizzazione
+            // 2. Chiudi il pannello laterale
+            closeLineInfoPanel();
+            
+            // 3. Rimuovi eventuali marker di geolocalizzazione
             clearLocationMarkers();
             
-            // 3. Reset vista mappa alle coordinate iniziali di Trieste
+            // 4. Reset vista mappa alle coordinate iniziali di Trieste
             window.map.setView([45.6495, 13.7768], 13, {
                 animate: true,
                 duration: 1.0
@@ -450,6 +495,144 @@
                 showToast("Benvenuto in TriesteLink - Vista panoramica caricata", "#007bff");
             }, 2000); // Aspetta 2 secondi che tutto sia inizializzato
         });
+    </script>
+
+    <script>
+        // Funzioni per il pannello informativo della linea
+        
+        function showLineInfoPanel(lineNumber, lineColor, stops) {
+            const panel = document.getElementById('line-info-panel');
+            const lineNameElement = document.getElementById('line-name');
+            const colorIndicator = document.getElementById('line-color-indicator');
+            const stopsList = document.getElementById('stops-list');
+            
+            // Imposta il nome e colore della linea
+            lineNameElement.textContent = `Linea ${lineNumber}`;
+            colorIndicator.style.backgroundColor = lineColor;
+            
+            // Pulisce e popola la lista fermate
+            stopsList.innerHTML = '';
+            
+            if (stops && stops.length > 0) {
+                stops.forEach((stop, index) => {
+                    const li = document.createElement('li');
+                    const stopName = stop.tags && stop.tags.name ? stop.tags.name : `Fermata ${lineNumber} - ${index + 1}`;
+                    li.innerHTML = `<span class="stop-name">${stopName}</span>`;
+                    
+                    // Aggiunge click per centrare la mappa sulla fermata
+                    li.addEventListener('click', function() {
+                        if (stop.lat && stop.lon) {
+                            window.map.setView([stop.lat, stop.lon], 16, {
+                                animate: true,
+                                duration: 0.8
+                            });
+                            showToast(`Centrato su: ${stopName}`, lineColor);
+                        }
+                    });
+                    
+                    stopsList.appendChild(li);
+                });
+            } else {
+                const li = document.createElement('li');
+                li.innerHTML = '<span class="stop-name">Caricamento fermate...</span>';
+                stopsList.appendChild(li);
+            }
+            
+            // Mostra il pannello
+            panel.classList.add('active');
+        }
+        
+        function closeLineInfoPanel() {
+            const panel = document.getElementById('line-info-panel');
+            panel.classList.remove('active');
+        }
+        
+        // Funzione per aggiornare il pannello con le fermate quando sono disponibili
+        function updateLineInfoPanel(stops) {
+            const stopsList = document.getElementById('stops-list');
+            const panel = document.getElementById('line-info-panel');
+            
+            if (panel.classList.contains('active')) {
+                // Ottieni il numero della linea attuale dal titolo
+                const lineNameElement = document.getElementById('line-name');
+                const lineNumber = lineNameElement.textContent.replace('Linea ', '');
+                const lineColor = document.getElementById('line-color-indicator').style.backgroundColor;
+                
+                stopsList.innerHTML = '';
+                
+                if (stops && stops.length > 0) {
+                    stops.forEach((stop, index) => {
+                        const li = document.createElement('li');
+                        const stopName = stop.tags && stop.tags.name ? stop.tags.name : `Fermata ${lineNumber} - ${index + 1}`;
+                        li.innerHTML = `<span class="stop-name">${stopName}</span>`;
+                        
+                        // Aggiunge click per centrare la mappa sulla fermata
+                        li.addEventListener('click', function() {
+                            if (stop.lat && stop.lon) {
+                                window.map.setView([stop.lat, stop.lon], 16, {
+                                    animate: true,
+                                    duration: 0.8
+                                });
+                                showToast(`Centrato su: ${stopName}`, lineColor);
+                            }
+                        });
+                        
+                        stopsList.appendChild(li);
+                    });
+                } else {
+                    const li = document.createElement('li');
+                    li.innerHTML = '<span class="stop-name">Nessuna fermata trovata</span>';
+                    stopsList.appendChild(li);
+                }
+            }
+        }
+        
+        // Funzione per caricare le fermate nel pannello da una linea specifica
+        function loadStopsForPanel(lineNumber) {
+            // Facciamo una nuova query per ottenere le fermate con i loro nomi
+            let relationIds = '';
+            
+            switch(lineNumber) {
+                case "2":
+                    relationIds = "13286981,13286982";
+                    break;
+                case "6":
+                    relationIds = "13295182,13295183";
+                    break;
+                case "9":
+                    relationIds = "13297000,13297001";
+                    break;
+                case "17":
+                    relationIds = "13300193,13300194";
+                    break;
+                case "17/":
+                    relationIds = "13307218,13300195";
+                    break;
+                case "36":
+                    relationIds = "13365168,13365169";
+                    break;
+                default:
+                    return;
+            }
+            
+            const query = `[out:json];
+rel(id:${relationIds});
+node(r)->.stops;
+.stops out body;`;
+            
+            const url = "https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query);
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.elements) {
+                        updateLineInfoPanel(data.elements);
+                    }
+                })
+                .catch(error => {
+                    console.error("Errore nel caricamento fermate per pannello:", error);
+                });
+        }
     </script>
 
     <script>
