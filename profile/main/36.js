@@ -18,7 +18,7 @@ async function getBusRoute36() {
 
         // Crea e aggiunge il nuovo layer
         window.routeLayer36 = L.geoJSON(routesGeoJSON, {
-            style: { color: "orange", weight: 3 } // Usa un colore distintivo per la linea 36
+            style: { color: "violet", weight: 3 } // Usa un colore distintivo per la linea 36
         }).addTo(window.map);
 
         // Mostra/nasconde fermate con un click sulla linea
