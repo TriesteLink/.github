@@ -74,6 +74,7 @@
     <!--questa è la sezione inlcusione script delle linee-->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="mapConfig.js"></script>
+    <script src="2.js"></script>
     <script src="17.js"></script>
     <script src="17b.js"></script>
     <script src="6.js"></script>
@@ -133,6 +134,7 @@
     <script>
         // Configurazione delle linee disponibili
         const availableLines = [
+            { number: "2", color: "#FF6B35", file: "2.js", displayName: "Linea 2" },
             { number: "6", color: "green", file: "6.js", displayName: "Linea 6" },
             { number: "9", color: "orange", file: "9.js", displayName: "Linea 9" },
             { number: "17", color: "blue", file: "17.js", displayName: "Linea 17" },
@@ -190,6 +192,18 @@
             
             // Carica la linea specifica E le sue fermate automaticamente
             switch(line.number) {
+                case "2":
+                    if (typeof getBusRoute2 === 'function') {
+                        getBusRoute2();
+                        // Carica automaticamente le fermate dopo un breve delay per assicurarsi che la linea sia caricata
+                        setTimeout(() => {
+                            if (typeof getBusStops2 === 'function') {
+                                getBusStops2();
+                                showLoadingMessage(`Linea ${line.number} caricata con fermate!`);
+                            }
+                        }, 1000);
+                    }
+                    break;
                 case "6":
                     if (typeof getBusRoute6 === 'function') {
                         getBusRoute6();
@@ -252,6 +266,9 @@
         // Funzione per nascondere tutte le linee attive
         function hideAllLines() {
             // Rimuove tutti i layer delle route
+            if (window.routeLayer2 && window.map.hasLayer(window.routeLayer2)) {
+                window.map.removeLayer(window.routeLayer2);
+            }
             if (window.routeLayer6 && window.map.hasLayer(window.routeLayer6)) {
                 window.map.removeLayer(window.routeLayer6);
             }
@@ -314,6 +331,11 @@
                 // Aggiungi un piccolo delay tra ogni linea per evitare sovraccarico
                 setTimeout(() => {
                     switch(line.number) {
+                        case "2":
+                            if (typeof getBusRoute2 === 'function') {
+                                getBusRoute2();
+                            }
+                            break;
                         case "6":
                             if (typeof getBusRoute6 === 'function') {
                                 getBusRoute6();
