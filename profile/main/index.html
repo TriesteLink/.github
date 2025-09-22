@@ -101,6 +101,10 @@
 
     <script>
         function showBusList() {
+            // Chiudi il pannello informativo della linea se è aperto
+            closeLineInfoPanel();
+            
+            // Apri la lista degli autobus
             document.getElementById('bus-list').style.transform = 'translateY(0)';
         }
 
@@ -360,12 +364,14 @@
             });
             
             // 4. Carica tutte le linee disponibili per la vista panoramica
+            /*
             setTimeout(() => {
                 loadAllLines();
             }, 1200); // Aspetta che la vista si resetti prima di caricare le linee
+            */
             
             // 5. Feedback visivo
-            showToast("Vista panoramica - Tutte le linee caricate", "#007bff");
+            showToast("Vista panoramica", "#007bff");
         }
 
         // Funzione per caricare tutte le linee disponibili
@@ -486,14 +492,16 @@
         }
 
         // Genera la lista e carica tutte le linee quando la pagina è caricata
+        
         document.addEventListener('DOMContentLoaded', function() {
             generateBusList();
             
-            // Carica tutte le linee per la vista panoramica iniziale
+            /*// Carica tutte le linee per la vista panoramica iniziale
             setTimeout(() => {
                 loadAllLines();
                 showToast("Benvenuto in TriesteLink - Vista panoramica caricata", "#007bff");
             }, 2000); // Aspetta 2 secondi che tutto sia inizializzato
+            */
         });
     </script>
 
