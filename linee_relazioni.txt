@@ -2,3 +2,30 @@ linea 2/ 13286981, 13286982
 linea 8 13296686, 
 linea 42 1916681, 
 linea 44 1916912, 
+
+in vista della modifica di dividere le fermate tra andata e ritorno nell'infopanel, iniziamo con la 17
+linea 17_a:
+[out:json];
+rel(id:13300193);  // Relazioni della linea 17
+node(r)->.stops;            // Trova i nodi (fermate) collegati alle relazioni
+.stops out body;            // Output delle fermate
+fermate:
+8577834117 (capolinea)
+1621660255
+7608819302
+4589306199
+4589306200
+270231408
+789981414
+268201214
+627851056
+627851058
+627851059
+627851062
+627851064
+273840241
+273840235
+273840233
+270561142
+4530646129
+281171668 (capolinea)
