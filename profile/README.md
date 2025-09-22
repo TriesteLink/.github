@@ -72,3 +72,5 @@ Contiene tutti i dati globali che servono per tutte le linee, in modo da importa
 Parecchio pesante caricare tutte le linee con fermate, bisognerà suddividere i carichi di gestione per alleggerire il display dei dati (per esempio, non caricare tutte le linee all'inizio, ma caricare solo la linea selezionata con fermata)
 ## Fermate
 Attualmente l'info-panel della linea funziona bene (meglio di quello che mi aspettassi), ma c'è un grave errore, le fermate sono caricate in maniera randomica. Bisognerà caricare in ordine le fermate e segnare il giro dell'autobus con andata e ritorno.
+
+Iimplementato andata, il ritorno ha qualche discordanza con la 17, ci sono alcune fermate che non c'entrano niente ed inoltre nell'infopanel principale non vengono caricate correttamente le andate

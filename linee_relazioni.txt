@@ -29,3 +29,29 @@ fermate:
 270561142
 4530646129
 281171668 (capolinea)
+
+[out:json];
+rel(id:13300194);  // Relazioni della linea 17
+node(r)->.stops;            // Trova i nodi (fermate) collegati alle relazioni
+.stops out body;            // Output delle fermate
+fermate:
+281171668 (capolinea)
+390873856
+270561143
+273840231
+273840230
+273840237
+627851063
+627851061
+627851060
+627851057
+627851055
+789920196
+789920203
+789920212
+4589307293
+4589264599
+9109518640
+1621660256
+296398798
+8577834117 (capolinea)

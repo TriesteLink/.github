@@ -276,12 +276,9 @@
                     if (typeof getBusRoute17 === 'function') {
                         getBusRoute17();
                         setTimeout(() => {
-                            if (typeof getBusStops17 === 'function') {
-                                getBusStops17();
-                                showLoadingMessage(`Linea ${line.number} caricata con fermate!`);
-                                setTimeout(() => {
-                                    loadStopsForPanel(line.number);
-                                }, 500);
+                            if (typeof getBusStopsAll17 === 'function') {
+                                getBusStopsAll17(); // Carica sia andata che ritorno
+                                showLoadingMessage(`Linea ${line.number} - Andata e Ritorno caricate!`);
                             }
                         }, 1000);
                     }
@@ -617,11 +614,11 @@
             }
             
             // Se hai implementato le funzioni separate per andata/ritorno della linea 17
-            if (window.busStopsLayer17A && window.map.hasLayer(window.busStopsLayer17A)) {
-                window.map.removeLayer(window.busStopsLayer17A);
+            if (window.busStopsLayer17_A && window.map.hasLayer(window.busStopsLayer17_A)) {
+                window.map.removeLayer(window.busStopsLayer17_A);
             }
-            if (window.busStopsLayer17R && window.map.hasLayer(window.busStopsLayer17R)) {
-                window.map.removeLayer(window.busStopsLayer17R);
+            if (window.busStopsLayer17_R && window.map.hasLayer(window.busStopsLayer17_R)) {
+                window.map.removeLayer(window.busStopsLayer17_R);
             }
         }
         
@@ -710,6 +707,183 @@ node(r)->.stops;
                 .catch(error => {
                     console.error("Errore nel caricamento fermate per pannello:", error);
                 });
+        }
+        
+        // Funzione per aggiornare il pannello informativo con fermate ordinate
+        function updateLineInfoPanelWithOrderedStops(lineNumber, lineColor, direction, orderedStops) {
+            const panel = document.getElementById('line-info-panel');
+            const lineNameElement = document.getElementById('line-name');
+            const colorIndicator = document.getElementById('line-color-indicator');
+            const stopsList = document.getElementById('stops-list');
+            
+            // Imposta il nome e colore della linea
+            lineNameElement.textContent = `Linea ${lineNumber}`;
+            colorIndicator.style.backgroundColor = lineColor;
+            
+            // Pulisce la lista
+            stopsList.innerHTML = '';
+            
+            // Header della direzione
+            const directionHeader = document.createElement('li');
+            directionHeader.className = 'direction-header';
+            directionHeader.innerHTML = `
+                <strong style="color: ${lineColor}; display: flex; align-items: center; margin-bottom: 10px;">
+                    <span style="width: 12px; height: 12px; border-radius: 50%; background-color: ${lineColor}; margin-right: 8px;"></span>
+                    ${direction} (${orderedStops.length} fermate)
+                </strong>
+            `;
+            stopsList.appendChild(directionHeader);
+            
+            // Lista fermate ordinate
+            orderedStops.forEach((stop) => {
+                const stopItem = document.createElement('li');
+                stopItem.className = 'stop-item';
+                const stopName = stop.tags?.name || `Fermata ${stop.id}`;
+                
+                stopItem.innerHTML = `
+                    <div style="display: flex; align-items: center; padding: 8px 12px; cursor: pointer;">
+                        <span style="
+                            background-color: ${stop.isCapolinea ? '#FF5722' : lineColor}; 
+                            color: white; 
+                            border-radius: 50%; 
+                            width: 20px; 
+                            height: 20px; 
+                            display: flex; 
+                            align-items: center; 
+                            justify-content: center; 
+                            font-size: 11px; 
+                            font-weight: bold; 
+                            margin-right: 10px;
+                            flex-shrink: 0;
+                        ">${stop.position}</span>
+                        <div style="flex-grow: 1;">
+                            <div style="font-weight: ${stop.isCapolinea ? 'bold' : 'normal'}; color: ${stop.isCapolinea ? '#FF5722' : 'inherit'};">
+                                ${stopName}
+                                ${stop.isCapolinea ? ' <span style="font-size: 10px; color: #FF5722;">(CAPOLINEA)</span>' : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Aggiunge click per centrare la mappa sulla fermata
+                stopItem.addEventListener('click', function() {
+                    if (stop.lat && stop.lon) {
+                        window.map.setView([stop.lat, stop.lon], 16, {
+                            animate: true,
+                            duration: 0.8
+                        });
+                        showToast(`Centrato su: ${stopName}`, lineColor);
+                    }
+                });
+                
+                stopsList.appendChild(stopItem);
+            });
+            
+            // Mostra il pannello
+            panel.classList.add('active');
+        }
+        
+        // Funzione per aggiornare il pannello informativo della linea 17 con entrambe le direzioni
+        function updateLineInfoPanelWithBothDirections17(orderedStopsRitorno) {
+            const panel = document.getElementById('line-info-panel');
+            const lineNameElement = document.getElementById('line-name');
+            const colorIndicator = document.getElementById('line-color-indicator');
+            const stopsList = document.getElementById('stops-list');
+            
+            // Imposta il nome e colore della linea
+            lineNameElement.textContent = `Linea 17`;
+            colorIndicator.style.backgroundColor = "#007bff";
+            
+            // Ottiene le fermate di andata che dovrebbero essere già caricate
+            // (Questo assume che getBusStopsA17 sia stato chiamato prima)
+            
+            // Pulisce la lista
+            stopsList.innerHTML = '';
+            
+            // Header ANDATA
+            const andataHeader = document.createElement('li');
+            andataHeader.className = 'direction-header';
+            andataHeader.innerHTML = `
+                <strong style="color: #4CAF50; display: flex; align-items: center; margin-bottom: 10px;">
+                    <span style="width: 12px; height: 12px; border-radius: 50%; background-color: #4CAF50; margin-right: 8px;"></span>
+                    ANDATA (19 fermate)
+                </strong>
+            `;
+            stopsList.appendChild(andataHeader);
+            
+            // Fermate andata - simuliamo quelle caricate precedentemente
+            const andataInfo = document.createElement('li');
+            andataInfo.className = 'stop-item';
+            andataInfo.innerHTML = `
+                <div style="padding: 8px 12px; font-style: italic; color: #666;">
+                    Fermate andata visualizzate sulla mappa (marker verdi con "A")
+                </div>
+            `;
+            stopsList.appendChild(andataInfo);
+            
+            // Separatore
+            const separator1 = document.createElement('li');
+            separator1.style.height = '10px';
+            stopsList.appendChild(separator1);
+            
+            // Header RITORNO
+            const ritornoHeader = document.createElement('li');
+            ritornoHeader.className = 'direction-header';
+            ritornoHeader.innerHTML = `
+                <strong style="color: #FF9800; display: flex; align-items: center; margin-bottom: 10px;">
+                    <span style="width: 12px; height: 12px; border-radius: 50%; background-color: #FF9800; margin-right: 8px;"></span>
+                    RITORNO (${orderedStopsRitorno.length} fermate)
+                </strong>
+            `;
+            stopsList.appendChild(ritornoHeader);
+            
+            // Lista fermate ritorno ordinate
+            orderedStopsRitorno.forEach((stop) => {
+                const stopItem = document.createElement('li');
+                stopItem.className = 'stop-item';
+                const stopName = stop.tags?.name || `Fermata ${stop.id}`;
+                
+                stopItem.innerHTML = `
+                    <div style="display: flex; align-items: center; padding: 8px 12px; cursor: pointer;">
+                        <span style="
+                            background-color: ${stop.isCapolinea ? '#FF5722' : '#FF9800'}; 
+                            color: white; 
+                            border-radius: 50%; 
+                            width: 20px; 
+                            height: 20px; 
+                            display: flex; 
+                            align-items: center; 
+                            justify-content: center; 
+                            font-size: 11px; 
+                            font-weight: bold; 
+                            margin-right: 10px;
+                            flex-shrink: 0;
+                        ">${stop.position}</span>
+                        <div style="flex-grow: 1;">
+                            <div style="font-weight: ${stop.isCapolinea ? 'bold' : 'normal'}; color: ${stop.isCapolinea ? '#FF5722' : 'inherit'};">
+                                ${stopName}
+                                ${stop.isCapolinea ? ' <span style="font-size: 10px; color: #FF5722;">(CAPOLINEA)</span>' : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Aggiunge click per centrare la mappa sulla fermata
+                stopItem.addEventListener('click', function() {
+                    if (stop.lat && stop.lon) {
+                        window.map.setView([stop.lat, stop.lon], 16, {
+                            animate: true,
+                            duration: 0.8
+                        });
+                        showToast(`Centrato su: ${stopName}`, "#FF9800");
+                    }
+                });
+                
+                stopsList.appendChild(stopItem);
+            });
+            
+            // Mostra il pannello
+            panel.classList.add('active');
         }
     </script>
 

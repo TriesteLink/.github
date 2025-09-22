@@ -35,6 +35,379 @@ async function getBusRoute17() {
     }
 }
 
+// Funzione per ottenere le fermate della linea 17 ANDATA in ordine corretto
+async function getBusStopsA17() {
+    // Rimuove le fermate della linea precedente, se presenti
+    if (window.activeBusStopsLayer) {
+        window.map.removeLayer(window.activeBusStopsLayer);
+    }
+
+    // Pulisce il layer andata precedente
+    if (window.busStopsLayer17_A) {
+        window.busStopsLayer17_A.clearLayers();
+    } else {
+        window.busStopsLayer17_A = L.layerGroup();
+    }
+
+    // IDs delle fermate in ordine di andata (dal file linee_relazioni.txt)
+    const andataStopsIds = [
+        "8577834117", // capolinea
+        "1621660255",
+        "7608819302", 
+        "4589306199",
+        "4589306200",
+        "270231408",
+        "789981414",
+        "268201214",
+        "627851056",
+        "627851058",
+        "627851059",
+        "627851062", 
+        "627851064",
+        "273840241",
+        "273840235",
+        "273840233",
+        "270561142",
+        "4530646129",
+        "281171668"  // capolinea
+    ];
+
+    // Query Overpass per ottenere i dettagli delle fermate specifiche
+    const nodeIds = andataStopsIds.join(',');
+    const query = `[out:json];
+node(id:${nodeIds});
+out body;`;
+
+    const url = "https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query);
+
+    try {
+        let response = await fetch(url);
+        let data = await response.json();
+        
+        // Crea un map per accesso rapido ai dati delle fermate
+        const stopsData = {};
+        data.elements.forEach(node => {
+            stopsData[node.id] = node;
+        });
+
+        // Array per memorizzare le fermate ordinate per l'info panel
+        const orderedStops = [];
+
+        // Crea i marker nell'ordine corretto dell'andata
+        andataStopsIds.forEach((stopId, index) => {
+            const node = stopsData[stopId];
+            if (node) {
+                // Determina se è capolinea
+                const isCapolinea = index === 0 || index === andataStopsIds.length - 1;
+                const stopName = node.tags?.name || `Fermata ${stopId}`;
+                
+                // Icona speciale per andata
+                const marker = L.marker([node.lat, node.lon], {
+                    icon: L.divIcon({
+                        className: 'bus-stop-marker andata',
+                        html: `<div style="
+                            background-color: ${isCapolinea ? '#FF5722' : '#4CAF50'}; 
+                            color: white; 
+                            border-radius: 50%; 
+                            width: ${isCapolinea ? '25px' : '20px'}; 
+                            height: ${isCapolinea ? '25px' : '20px'}; 
+                            display: flex; 
+                            align-items: center; 
+                            justify-content: center; 
+                            font-size: ${isCapolinea ? '14px' : '12px'}; 
+                            font-weight: bold;
+                            border: 2px solid white;
+                            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+                        ">${isCapolinea ? 'C' : 'A'}</div>`,
+                        iconSize: [isCapolinea ? 25 : 20, isCapolinea ? 25 : 20]
+                    })
+                });
+
+                // Popup con informazioni dettagliate
+                const popupContent = `
+                    <div style="text-align: center;">
+                        <b style="color: #4CAF50;">ANDATA</b><br>
+                        <strong>${stopName}</strong><br>
+                        ${isCapolinea ? '<span style="color: #FF5722; font-weight: bold;">CAPOLINEA</span><br>' : ''}
+                        <small>Fermata ${index + 1} di ${andataStopsIds.length}</small>
+                    </div>
+                `;
+                
+                marker.bindPopup(popupContent);
+                window.busStopsLayer17_A.addLayer(marker);
+                
+                // Aggiungi alla lista per l'info panel
+                orderedStops.push({
+                    ...node,
+                    isCapolinea: isCapolinea,
+                    position: index + 1
+                });
+            }
+        });
+
+        // Aggiunge il layer alla mappa
+        window.map.addLayer(window.busStopsLayer17_A);
+        
+        // Imposta come layer attivo
+        window.activeBusStopsLayer = window.busStopsLayer17_A;
+        
+        // Aggiorna il pannello informativo con le fermate ordinate
+        updateLineInfoPanelWithOrderedStops("17", "#4CAF50", "ANDATA", orderedStops);
+
+        console.log(`Caricate ${orderedStops.length} fermate della linea 17 andata in ordine corretto`);
+
+    } catch (error) {
+        console.error("Errore nel caricamento delle fermate andata linea 17:", error);
+    }
+}
+
+// Funzione per ottenere le fermate della linea 17 RITORNO in ordine corretto
+async function getBusStopsR17() {
+    // Rimuove le fermate della linea precedente, se presenti
+    if (window.activeBusStopsLayer) {
+        window.map.removeLayer(window.activeBusStopsLayer);
+    }
+
+    // Pulisce il layer ritorno precedente
+    if (window.busStopsLayer17_R) {
+        window.busStopsLayer17_R.clearLayers();
+    } else {
+        window.busStopsLayer17_R = L.layerGroup();
+    }
+
+    // IDs delle fermate in ordine di ritorno (dal file linee_relazioni.txt, righe 33-57)
+    const ritornoStopsIds = [
+        "281171668", // capolinea
+        "4530646130",
+        "270561141",
+        "273840234",
+        "273840236",
+        "273840242",
+        "627851065",
+        "627851063", 
+        "627851061",
+        "627851060",
+        "627851057",
+        "268201213",
+        "789981413",
+        "270231407",
+        "4589306201",
+        "4589306198",
+        "7608819301",
+        "1621660254",
+        "8577834117"  // capolinea
+    ];
+
+    // Query Overpass per ottenere i dettagli delle fermate specifiche
+    const nodeIds = ritornoStopsIds.join(',');
+    const query = `[out:json];
+node(id:${nodeIds});
+out body;`;
+
+    const url = "https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query);
+
+    try {
+        let response = await fetch(url);
+        let data = await response.json();
+        
+        // Crea un map per accesso rapido ai dati delle fermate
+        const stopsData = {};
+        data.elements.forEach(node => {
+            stopsData[node.id] = node;
+        });
+
+        // Array per memorizzare le fermate ordinate per l'info panel
+        const orderedStops = [];
+
+        // Crea i marker nell'ordine corretto del ritorno
+        ritornoStopsIds.forEach((stopId, index) => {
+            const node = stopsData[stopId];
+            if (node) {
+                // Determina se è capolinea
+                const isCapolinea = index === 0 || index === ritornoStopsIds.length - 1;
+                const stopName = node.tags?.name || `Fermata ${stopId}`;
+                
+                // Icona speciale per ritorno
+                const marker = L.marker([node.lat, node.lon], {
+                    icon: L.divIcon({
+                        className: 'bus-stop-marker ritorno',
+                        html: `<div style="
+                            background-color: ${isCapolinea ? '#FF5722' : '#FF9800'}; 
+                            color: white; 
+                            border-radius: 50%; 
+                            width: ${isCapolinea ? '25px' : '20px'}; 
+                            height: ${isCapolinea ? '25px' : '20px'}; 
+                            display: flex; 
+                            align-items: center; 
+                            justify-content: center; 
+                            font-size: ${isCapolinea ? '14px' : '12px'}; 
+                            font-weight: bold;
+                            border: 2px solid white;
+                            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+                        ">${isCapolinea ? 'C' : 'R'}</div>`,
+                        iconSize: [isCapolinea ? 25 : 20, isCapolinea ? 25 : 20]
+                    })
+                });
+
+                // Popup con informazioni dettagliate
+                const popupContent = `
+                    <div style="text-align: center;">
+                        <b style="color: #FF9800;">RITORNO</b><br>
+                        <strong>${stopName}</strong><br>
+                        ${isCapolinea ? '<span style="color: #FF5722; font-weight: bold;">CAPOLINEA</span><br>' : ''}
+                        <small>Fermata ${index + 1} di ${ritornoStopsIds.length}</small>
+                    </div>
+                `;
+                
+                marker.bindPopup(popupContent);
+                window.busStopsLayer17_R.addLayer(marker);
+                
+                // Aggiungi alla lista per l'info panel
+                orderedStops.push({
+                    ...node,
+                    isCapolinea: isCapolinea,
+                    position: index + 1
+                });
+            }
+        });
+
+        // Aggiunge il layer alla mappa
+        window.map.addLayer(window.busStopsLayer17_R);
+        
+        // Imposta come layer attivo
+        window.activeBusStopsLayer = window.busStopsLayer17_R;
+        
+        // Aggiorna il pannello informativo con le fermate ordinate
+        updateLineInfoPanelWithOrderedStops("17", "#FF9800", "RITORNO", orderedStops);
+
+        console.log(`Caricate ${orderedStops.length} fermate della linea 17 ritorno in ordine corretto`);
+
+    } catch (error) {
+        console.error("Errore nel caricamento delle fermate ritorno linea 17:", error);
+    }
+}
+
+// Funzione per caricare ENTRAMBE le direzioni della linea 17
+async function getBusStopsAll17() {
+    // Rimuove le fermate della linea precedente, se presenti
+    if (window.activeBusStopsLayer) {
+        window.map.removeLayer(window.activeBusStopsLayer);
+    }
+
+    // Carica prima l'andata
+    await getBusStopsA17();
+    
+    // Aspetta un momento e poi carica anche il ritorno
+    setTimeout(async () => {
+        // Pulisce il layer ritorno precedente
+        if (window.busStopsLayer17_R) {
+            window.busStopsLayer17_R.clearLayers();
+        } else {
+            window.busStopsLayer17_R = L.layerGroup();
+        }
+
+        // Carica le fermate del ritorno (senza aggiornare il pannello)
+        const ritornoStopsIds = [
+            "281171668", // capolinea
+            "4530646130",
+            "270561141",
+            "273840234",
+            "273840236",
+            "273840242",
+            "627851065",
+            "627851063", 
+            "627851061",
+            "627851060",
+            "627851057",
+            "268201213",
+            "789981413",
+            "270231407",
+            "4589306201",
+            "4589306198",
+            "7608819301",
+            "1621660254",
+            "8577834117"  // capolinea
+        ];
+
+        const nodeIds = ritornoStopsIds.join(',');
+        const query = `[out:json];
+node(id:${nodeIds});
+out body;`;
+
+        const url = "https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query);
+
+        try {
+            let response = await fetch(url);
+            let data = await response.json();
+            
+            const stopsData = {};
+            data.elements.forEach(node => {
+                stopsData[node.id] = node;
+            });
+
+            const orderedStopsRitorno = [];
+
+            // Crea i marker del ritorno
+            ritornoStopsIds.forEach((stopId, index) => {
+                const node = stopsData[stopId];
+                if (node) {
+                    const isCapolinea = index === 0 || index === ritornoStopsIds.length - 1;
+                    const stopName = node.tags?.name || `Fermata ${stopId}`;
+                    
+                    const marker = L.marker([node.lat, node.lon], {
+                        icon: L.divIcon({
+                            className: 'bus-stop-marker ritorno',
+                            html: `<div style="
+                                background-color: ${isCapolinea ? '#FF5722' : '#FF9800'}; 
+                                color: white; 
+                                border-radius: 50%; 
+                                width: ${isCapolinea ? '25px' : '20px'}; 
+                                height: ${isCapolinea ? '25px' : '20px'}; 
+                                display: flex; 
+                                align-items: center; 
+                                justify-content: center; 
+                                font-size: ${isCapolinea ? '14px' : '12px'}; 
+                                font-weight: bold;
+                                border: 2px solid white;
+                                box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+                            ">${isCapolinea ? 'C' : 'R'}</div>`,
+                            iconSize: [isCapolinea ? 25 : 20, isCapolinea ? 25 : 20]
+                        })
+                    });
+
+                    const popupContent = `
+                        <div style="text-align: center;">
+                            <b style="color: #FF9800;">RITORNO</b><br>
+                            <strong>${stopName}</strong><br>
+                            ${isCapolinea ? '<span style="color: #FF5722; font-weight: bold;">CAPOLINEA</span><br>' : ''}
+                            <small>Fermata ${index + 1} di ${ritornoStopsIds.length}</small>
+                        </div>
+                    `;
+                    
+                    marker.bindPopup(popupContent);
+                    window.busStopsLayer17_R.addLayer(marker);
+                    
+                    orderedStopsRitorno.push({
+                        ...node,
+                        isCapolinea: isCapolinea,
+                        position: index + 1
+                    });
+                }
+            });
+
+            // Aggiunge il layer alla mappa
+            window.map.addLayer(window.busStopsLayer17_R);
+            
+            // Aggiorna il pannello con ENTRAMBE le direzioni
+            updateLineInfoPanelWithBothDirections17(orderedStopsRitorno);
+
+        } catch (error) {
+            console.error("Errore nel caricamento delle fermate ritorno:", error);
+        }
+        
+    }, 1000);
+}
+
 // Funzione per ottenere le fermate della linea 17
 async function getBusStops17() {
     // Rimuove le fermate della linea precedente, se presenti

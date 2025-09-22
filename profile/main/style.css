@@ -391,3 +391,50 @@ button:hover {
         width: calc(90% - 290px);
     }
 }
+
+/* Stili per le fermate ordinate */
+.direction-header {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 12px;
+    margin: 8px 0;
+    border-left: 4px solid #007bff;
+    list-style: none;
+}
+
+.stop-item {
+    list-style: none;
+    margin: 4px 0;
+    border-radius: 6px;
+    transition: background-color 0.2s ease;
+}
+
+.stop-item:hover {
+    background-color: #f0f8ff;
+    transform: translateX(3px);
+}
+
+.bus-stop-marker {
+    border: 2px solid white !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
+}
+
+/* Stili specifici per andata e ritorno */
+.bus-stop-marker.andata {
+    filter: hue-rotate(0deg); /* Verde naturale per andata */
+}
+
+.bus-stop-marker.ritorno {
+    filter: hue-rotate(30deg); /* Arancione per ritorno */
+}
+
+/* Stili per le direzioni nel pannello */
+.direction-header strong[style*="#4CAF50"] {
+    border-left: 4px solid #4CAF50;
+    padding-left: 8px;
+}
+
+.direction-header strong[style*="#FF9800"] {
+    border-left: 4px solid #FF9800;
+    padding-left: 8px;
+}
