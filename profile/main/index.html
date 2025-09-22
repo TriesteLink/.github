@@ -34,12 +34,22 @@
             font-size: 16px;
             cursor: pointer;
         }
+        /*.logo-img {
+            height: 30px;
+            width: auto;
+            vertical-align: middle;
+            margin-right: 10px;
+        }*/
     </style>
 </head>
 <body>
     <!-- Barra superiore con titolo centrato e bottoni a destra -->
     <div class="top-bar">
-        <h1>TriesteLink</h1>
+        <h1>
+            <!--logo <img src="TriesteLink.jpg" alt="TriesteLink Logo" class="logo-img">
+            TriesteLink--> 
+            TriesteLink
+        </h1>
         <div class="top-buttons">
             <button onclick="toggleTheme()">🌙</button>
             <button onclick="showInfo()">ℹ️</button>
@@ -68,7 +78,7 @@
     <div class="nav-bar">
         <button onclick="showMap()">🗺️ <span class="nav-text">Mappa</span></button>
         <button onclick="showBusList()">🚌 <span class="nav-text">Lista Autobus</span></button>
-        <button onclick="findStop()">📍 <span class="nav-text">Trova Fermata</span></button>
+        <button onclick="findStop()">🚏 <span class="nav-text">Trova Fermata</span></button>
         <button onclick="showDeviceLocation()">📍 <span class="nav-text">La Mia Posizione</span></button>
     </div>
 
@@ -118,6 +128,7 @@
 
         function closeInfo() {
             document.getElementById('info-popup').classList.add('hidden');
+            hideAllLines(); // Nasconde tutte le linee quando si chiude l'info
         }
 
         //funzione per la geolocalizzazione
@@ -553,6 +564,65 @@
         function closeLineInfoPanel() {
             const panel = document.getElementById('line-info-panel');
             panel.classList.remove('active');
+            
+            // Nasconde tutte le linee e fermate quando si chiude il pannello
+            hideAllLinesWithoutClosingPanel();
+        }
+        
+        // Funzione helper che nasconde le linee senza chiudere il pannello
+        function hideAllLinesWithoutClosingPanel() {
+            // Rimuove tutti i layer delle route
+            if (window.routeLayer2 && window.map.hasLayer(window.routeLayer2)) {
+                window.map.removeLayer(window.routeLayer2);
+            }
+            if (window.routeLayer6 && window.map.hasLayer(window.routeLayer6)) {
+                window.map.removeLayer(window.routeLayer6);
+            }
+            if (window.routeLayer9 && window.map.hasLayer(window.routeLayer9)) {
+                window.map.removeLayer(window.routeLayer9);
+            }
+            if (window.routeLayer17 && window.map.hasLayer(window.routeLayer17)) {
+                window.map.removeLayer(window.routeLayer17);
+            }
+            if (window.routeLayer17B && window.map.hasLayer(window.routeLayer17B)) {
+                window.map.removeLayer(window.routeLayer17B);
+            }
+            if (window.routeLayer36 && window.map.hasLayer(window.routeLayer36)) {
+                window.map.removeLayer(window.routeLayer36);
+            }
+
+            // Rimuove tutti i layer delle fermate/marker
+            if (window.activeBusStopsLayer && window.map.hasLayer(window.activeBusStopsLayer)) {
+                window.map.removeLayer(window.activeBusStopsLayer);
+            }
+            
+            // Rimuove tutti i layer delle fermate specifici per linea
+            if (window.busStopsLayer2 && window.map.hasLayer(window.busStopsLayer2)) {
+                window.map.removeLayer(window.busStopsLayer2);
+            }
+            if (window.busStopsLayer6 && window.map.hasLayer(window.busStopsLayer6)) {
+                window.map.removeLayer(window.busStopsLayer6);
+            }
+            if (window.busStopsLayer9 && window.map.hasLayer(window.busStopsLayer9)) {
+                window.map.removeLayer(window.busStopsLayer9);
+            }
+            if (window.busStopsLayer17 && window.map.hasLayer(window.busStopsLayer17)) {
+                window.map.removeLayer(window.busStopsLayer17);
+            }
+            if (window.busStopsLayer17B && window.map.hasLayer(window.busStopsLayer17B)) {
+                window.map.removeLayer(window.busStopsLayer17B);
+            }
+            if (window.busStopsLayer36 && window.map.hasLayer(window.busStopsLayer36)) {
+                window.map.removeLayer(window.busStopsLayer36);
+            }
+            
+            // Se hai implementato le funzioni separate per andata/ritorno della linea 17
+            if (window.busStopsLayer17A && window.map.hasLayer(window.busStopsLayer17A)) {
+                window.map.removeLayer(window.busStopsLayer17A);
+            }
+            if (window.busStopsLayer17R && window.map.hasLayer(window.busStopsLayer17R)) {
+                window.map.removeLayer(window.busStopsLayer17R);
+            }
         }
         
         // Funzione per aggiornare il pannello con le fermate quando sono disponibili
