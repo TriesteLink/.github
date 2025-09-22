@@ -74,4 +74,5 @@ node(r)->.stops;            // Trova i nodi (fermate) collegati alle relazioni
 // Crea il layer delle fermate all'inizio
 window.busStopsLayer17 = L.layerGroup().addTo(window.map);
 
-getBusRoute17();
+// COMMENTATO: Caricamento automatico disabilitato per migliorare le performance
+// getBusRoute17();

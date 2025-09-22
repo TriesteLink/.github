@@ -75,4 +75,5 @@ node(r)->.stops;            // Trova i nodi (fermate) collegati alle relazioni
 window.busStopsLayer17B = L.layerGroup().addTo(window.map);
 
 // Carica la linea 17B
-getBusRoute17B();
+// COMMENTATO: Caricamento automatico disabilitato per migliorare le performance
+// getBusRoute17B();

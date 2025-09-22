@@ -69,4 +69,6 @@ Contiene tutti i dati globali che servono per tutte le linee, in modo da importa
 
 # PROBLEMI NOTI (da risolvere)
 ## Linee
-Per ora tutte si comportano come devono, ovvero ogni linea, quando richiamata, mostra le sue fermate, e nel caso ci sia un'altra linea mostrata, nasconde le fermate della linea precedente, mostrando la linea nuova, tranne che per la 17
+Parecchio pesante caricare tutte le linee con fermate, bisognerà suddividere i carichi di gestione per alleggerire il display dei dati (per esempio, non caricare tutte le linee all'inizio, ma caricare solo la linea selezionata con fermata)
+## Fermate
+Attualmente l'info-panel della linea funziona bene (meglio di quello che mi aspettassi), ma c'è un grave errore, le fermate sono caricate in maniera randomica. Bisognerà caricare in ordine le fermate e segnare il giro dell'autobus con andata e ritorno.

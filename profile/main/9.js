@@ -74,4 +74,5 @@ async function getBusStops9() {
 window.busStopsLayer9 = L.layerGroup().addTo(window.map);
 
 // Carica la linea 9
-getBusRoute9();
+// COMMENTATO: Caricamento automatico disabilitato per migliorare le performance
+// getBusRoute9();

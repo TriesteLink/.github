@@ -76,4 +76,5 @@ node(r)->.stops;            // Trova i nodi (fermate) collegati alle relazioni
 window.busStopsLayer36 = L.layerGroup().addTo(window.map);
 
 // Carica la linea 36
-getBusRoute36();
+// COMMENTATO: Caricamento automatico disabilitato per migliorare le performance
+// getBusRoute36();
