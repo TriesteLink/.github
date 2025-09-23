@@ -53,7 +53,7 @@ async function getBusStopsA17() {
     const andataStopsIds = [
         "8577834117", // capolinea
         "1621660255",
-        "7608819302", 
+        "7608819302",
         "4589306199",
         "4589306200",
         "270231408",
@@ -62,7 +62,7 @@ async function getBusStopsA17() {
         "627851056",
         "627851058",
         "627851059",
-        "627851062", 
+        "627851062",
         "627851064",
         "273840241",
         "273840235",
@@ -83,7 +83,7 @@ out body;`;
     try {
         let response = await fetch(url);
         let data = await response.json();
-        
+
         // Crea un map per accesso rapido ai dati delle fermate
         const stopsData = {};
         data.elements.forEach(node => {
@@ -100,7 +100,7 @@ out body;`;
                 // Determina se è capolinea
                 const isCapolinea = index === 0 || index === andataStopsIds.length - 1;
                 const stopName = node.tags?.name || `Fermata ${stopId}`;
-                
+
                 // Icona uniforme per tutte le fermate (blu linea 17), capolinea in rosso
                 const marker = L.marker([node.lat, node.lon], {
                     icon: L.divIcon({
@@ -132,10 +132,10 @@ out body;`;
                         <small>Fermata ${index + 1} di ${andataStopsIds.length}</small>
                     </div>
                 `;
-                
+
                 marker.bindPopup(popupContent);
                 window.busStopsLayer17_A.addLayer(marker);
-                
+
                 // Aggiungi alla lista per l'info panel
                 orderedStops.push({
                     ...node,
@@ -147,10 +147,10 @@ out body;`;
 
         // Aggiunge il layer alla mappa
         window.map.addLayer(window.busStopsLayer17_A);
-        
+
         // Imposta come layer attivo
         window.activeBusStopsLayer = window.busStopsLayer17_A;
-        
+
         // Aggiorna il pannello informativo con le fermate ordinate
         updateLineInfoPanelWithOrderedStops("17", "blue", "ANDATA", orderedStops);
 
@@ -185,7 +185,7 @@ async function getBusStopsR17() {
         "273840237",
         "627851063",
         "627851061",
-        "627851060", 
+        "627851060",
         "627851057",
         "627851055",
         "789920196",
@@ -210,7 +210,7 @@ out body;`;
     try {
         let response = await fetch(url);
         let data = await response.json();
-        
+
         // Crea un map per accesso rapido ai dati delle fermate
         const stopsData = {};
         data.elements.forEach(node => {
@@ -227,7 +227,7 @@ out body;`;
                 // Determina se è capolinea
                 const isCapolinea = index === 0 || index === ritornoStopsIds.length - 1;
                 const stopName = node.tags?.name || `Fermata ${stopId}`;
-                
+
                 // Icona uniforme per tutte le fermate (blu linea 17), capolinea in rosso
                 const marker = L.marker([node.lat, node.lon], {
                     icon: L.divIcon({
@@ -259,10 +259,10 @@ out body;`;
                         <small>Fermata ${index + 1} di ${ritornoStopsIds.length}</small>
                     </div>
                 `;
-                
+
                 marker.bindPopup(popupContent);
                 window.busStopsLayer17_R.addLayer(marker);
-                
+
                 // Aggiungi alla lista per l'info panel
                 orderedStops.push({
                     ...node,
@@ -274,10 +274,10 @@ out body;`;
 
         // Aggiunge il layer alla mappa
         window.map.addLayer(window.busStopsLayer17_R);
-        
+
         // Imposta come layer attivo
         window.activeBusStopsLayer = window.busStopsLayer17_R;
-        
+
         // Aggiorna il pannello informativo con le fermate ordinate
         updateLineInfoPanelWithOrderedStops("17", "blue", "RITORNO", orderedStops);
 
@@ -306,7 +306,7 @@ async function getBusStopsA17Data() {
     const andataStopsIds = [
         "8577834117", // capolinea
         "1621660255",
-        "7608819302", 
+        "7608819302",
         "4589306199",
         "4589306200",
         "270231408",
@@ -315,7 +315,7 @@ async function getBusStopsA17Data() {
         "627851056",
         "627851058",
         "627851059",
-        "627851062", 
+        "627851062",
         "627851064",
         "273840241",
         "273840235",
@@ -336,7 +336,7 @@ out body;`;
     try {
         let response = await fetch(url);
         let data = await response.json();
-        
+
         // Crea un map per accesso rapido ai dati delle fermate
         const stopsData = {};
         data.elements.forEach(node => {
@@ -353,7 +353,7 @@ out body;`;
                 // Determina se è capolinea
                 const isCapolinea = index === 0 || index === andataStopsIds.length - 1;
                 const stopName = node.tags?.name || `Fermata ${stopId}`;
-                
+
                 // Icona uniforme per tutte le fermate (blu linea 17), capolinea in rosso
                 const marker = L.marker([node.lat, node.lon], {
                     icon: L.divIcon({
@@ -385,10 +385,10 @@ out body;`;
                         <small>Fermata ${index + 1} di ${andataStopsIds.length}</small>
                     </div>
                 `;
-                
+
                 marker.bindPopup(popupContent);
                 window.busStopsLayer17_A.addLayer(marker);
-                
+
                 // Aggiungi alla lista per l'info panel
                 orderedStops.push({
                     ...node,
@@ -400,7 +400,7 @@ out body;`;
 
         // Aggiunge il layer alla mappa
         window.map.addLayer(window.busStopsLayer17_A);
-        
+
         // Imposta come layer attivo
         window.activeBusStopsLayer = window.busStopsLayer17_A;
 
@@ -424,7 +424,7 @@ async function getBusStopsAll17() {
 
     // Carica prima l'andata e ottieni i dati per il pannello
     const andataData = await getBusStopsA17Data();
-    
+
     // Aspetta un momento e poi carica anche il ritorno
     setTimeout(async () => {
         // Pulisce il layer ritorno precedente
@@ -437,23 +437,24 @@ async function getBusStopsAll17() {
         // Carica le fermate del ritorno (senza aggiornare il pannello)
         const ritornoStopsIds = [
             "281171668", // capolinea
-            "4530646130",
-            "270561141",
-            "273840234",
-            "273840236",
-            "273840242",
-            "627851065",
-            "627851063", 
+            "390873856",
+            "270561143",
+            "273840231",
+            "273840230",
+            "273840237",
+            "627851063",
             "627851061",
             "627851060",
             "627851057",
-            "268201213",
-            "789981413",
-            "270231407",
-            "4589306201",
-            "4589306198",
-            "7608819301",
-            "1621660254",
+            "627851055",
+            "789920196",
+            "789920203",
+            "789920212",
+            "4589307293",
+            "4589264599",
+            "9109518640",
+            "1621660256",
+            "296398798",
             "8577834117"  // capolinea
         ];
 
@@ -467,7 +468,7 @@ out body;`;
         try {
             let response = await fetch(url);
             let data = await response.json();
-            
+
             const stopsData = {};
             data.elements.forEach(node => {
                 stopsData[node.id] = node;
@@ -481,7 +482,7 @@ out body;`;
                 if (node) {
                     const isCapolinea = index === 0 || index === ritornoStopsIds.length - 1;
                     const stopName = node.tags?.name || `Fermata ${stopId}`;
-                    
+
                     const marker = L.marker([node.lat, node.lon], {
                         icon: L.divIcon({
                             className: 'bus-stop-marker linea17',
@@ -511,10 +512,10 @@ out body;`;
                             <small>Fermata ${index + 1} di ${ritornoStopsIds.length}</small>
                         </div>
                     `;
-                    
+
                     marker.bindPopup(popupContent);
                     window.busStopsLayer17_R.addLayer(marker);
-                    
+
                     orderedStopsRitorno.push({
                         ...node,
                         isCapolinea: isCapolinea,
@@ -525,14 +526,14 @@ out body;`;
 
             // Aggiunge il layer alla mappa
             window.map.addLayer(window.busStopsLayer17_R);
-            
+
             // Aggiorna il pannello con ENTRAMBE le direzioni
             updateLineInfoPanelWithBothDirections17(andataData, orderedStopsRitorno);
 
         } catch (error) {
             console.error("Errore nel caricamento delle fermate ritorno:", error);
         }
-        
+
     }, 1000);
 }
 
