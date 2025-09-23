@@ -3,6 +3,8 @@ linea 8 13296686,
 linea 42 1916681, 
 linea 44 1916912, 
 
+----------------------------------------------------------------------
+
 linea 2/_a:
 [out:json];
 rel(id:13286981);  // Relazioni della linea 17
@@ -47,6 +49,24 @@ fermate:
 789908256
 789912569
 269060873 // capolinea Via Galatti
+
+--------------------------------------------------------------------------
+
+linea 6_a:
+[out:json];
+rel(id:13295182);  // Relazioni della linea 17
+node(r)->.stops;            // Trova i nodi (fermate) collegati alle relazioni
+.stops out body;
+fermate:
+
+
+linea 6_r:
+rel(id:13295183);  // Relazioni della linea 17
+node(r)->.stops;            // Trova i nodi (fermate) collegati alle relazioni
+.stops out body;
+fermate:
+
+-------------------------------------------------------------------------
 
 in vista della modifica di dividere le fermate tra andata e ritorno nell'infopanel, iniziamo con la 17
 linea 17_a:
