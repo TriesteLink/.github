@@ -101,24 +101,24 @@ out body;`;
                 const isCapolinea = index === 0 || index === andataStopsIds.length - 1;
                 const stopName = node.tags?.name || `Fermata ${stopId}`;
                 
-                // Icona speciale per andata
+                // Icona uniforme per tutte le fermate (blu linea 17), capolinea in rosso
                 const marker = L.marker([node.lat, node.lon], {
                     icon: L.divIcon({
-                        className: 'bus-stop-marker andata',
+                        className: 'bus-stop-marker linea17',
                         html: `<div style="
-                            background-color: ${isCapolinea ? '#FF5722' : '#4CAF50'}; 
+                            background-color: ${isCapolinea ? '#FF5722' : 'blue'}; 
                             color: white; 
                             border-radius: 50%; 
-                            width: ${isCapolinea ? '25px' : '20px'}; 
-                            height: ${isCapolinea ? '25px' : '20px'}; 
+                            width: ${isCapolinea ? '25px' : '15px'}; 
+                            height: ${isCapolinea ? '25px' : '15px'}; 
                             display: flex; 
                             align-items: center; 
                             justify-content: center; 
-                            font-size: ${isCapolinea ? '14px' : '12px'}; 
+                            font-size: ${isCapolinea ? '14px' : '0px'}; 
                             font-weight: bold;
                             border: 2px solid white;
                             box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-                        ">${isCapolinea ? 'C' : 'A'}</div>`,
+                        ">${isCapolinea ? 'C' : ''}</div>`,
                         iconSize: [isCapolinea ? 25 : 20, isCapolinea ? 25 : 20]
                     })
                 });
@@ -126,7 +126,7 @@ out body;`;
                 // Popup con informazioni dettagliate
                 const popupContent = `
                     <div style="text-align: center;">
-                        <b style="color: #4CAF50;">ANDATA</b><br>
+                        <b style="color: blue;">Linea 17</b><br>
                         <strong>${stopName}</strong><br>
                         ${isCapolinea ? '<span style="color: #FF5722; font-weight: bold;">CAPOLINEA</span><br>' : ''}
                         <small>Fermata ${index + 1} di ${andataStopsIds.length}</small>
@@ -152,7 +152,7 @@ out body;`;
         window.activeBusStopsLayer = window.busStopsLayer17_A;
         
         // Aggiorna il pannello informativo con le fermate ordinate
-        updateLineInfoPanelWithOrderedStops("17", "#4CAF50", "ANDATA", orderedStops);
+        updateLineInfoPanelWithOrderedStops("17", "blue", "ANDATA", orderedStops);
 
         console.log(`Caricate ${orderedStops.length} fermate della linea 17 andata in ordine corretto`);
 
@@ -227,32 +227,32 @@ out body;`;
                 const isCapolinea = index === 0 || index === ritornoStopsIds.length - 1;
                 const stopName = node.tags?.name || `Fermata ${stopId}`;
                 
-                // Icona speciale per ritorno
+                // Icona uniforme per tutte le fermate (blu linea 17), capolinea in rosso
                 const marker = L.marker([node.lat, node.lon], {
                     icon: L.divIcon({
-                        className: 'bus-stop-marker ritorno',
+                        className: 'bus-stop-marker linea17',
                         html: `<div style="
-                            background-color: ${isCapolinea ? '#FF5722' : '#FF9800'}; 
+                            background-color: ${isCapolinea ? '#FF5722' : 'blue'}; 
                             color: white; 
                             border-radius: 50%; 
-                            width: ${isCapolinea ? '25px' : '20px'}; 
-                            height: ${isCapolinea ? '25px' : '20px'}; 
+                            width: ${isCapolinea ? '25px' : '15px'}; 
+                            height: ${isCapolinea ? '25px' : '15px'}; 
                             display: flex; 
                             align-items: center; 
                             justify-content: center; 
-                            font-size: ${isCapolinea ? '14px' : '12px'}; 
+                            font-size: ${isCapolinea ? '14px' : '0px'}; 
                             font-weight: bold;
                             border: 2px solid white;
                             box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-                        ">${isCapolinea ? 'C' : 'R'}</div>`,
-                        iconSize: [isCapolinea ? 25 : 20, isCapolinea ? 25 : 20]
+                        ">${isCapolinea ? 'C' : ''}</div>`,
+                        iconSize: [isCapolinea ? 25 : 15, isCapolinea ? 25 : 15]
                     })
                 });
 
                 // Popup con informazioni dettagliate
                 const popupContent = `
                     <div style="text-align: center;">
-                        <b style="color: #FF9800;">RITORNO</b><br>
+                        <b style="color: blue;">Linea 17</b><br>
                         <strong>${stopName}</strong><br>
                         ${isCapolinea ? '<span style="color: #FF5722; font-weight: bold;">CAPOLINEA</span><br>' : ''}
                         <small>Fermata ${index + 1} di ${ritornoStopsIds.length}</small>
@@ -278,12 +278,139 @@ out body;`;
         window.activeBusStopsLayer = window.busStopsLayer17_R;
         
         // Aggiorna il pannello informativo con le fermate ordinate
-        updateLineInfoPanelWithOrderedStops("17", "#FF9800", "RITORNO", orderedStops);
+        updateLineInfoPanelWithOrderedStops("17", "blue", "RITORNO", orderedStops);
 
         console.log(`Caricate ${orderedStops.length} fermate della linea 17 ritorno in ordine corretto`);
 
     } catch (error) {
         console.error("Errore nel caricamento delle fermate ritorno linea 17:", error);
+    }
+}
+
+// Funzione helper per ottenere i dati dell'andata senza aggiornare il pannello
+async function getBusStopsA17Data() {
+    // Rimuove le fermate della linea precedente, se presenti
+    if (window.activeBusStopsLayer) {
+        window.map.removeLayer(window.activeBusStopsLayer);
+    }
+
+    // Pulisce il layer andata precedente
+    if (window.busStopsLayer17_A) {
+        window.busStopsLayer17_A.clearLayers();
+    } else {
+        window.busStopsLayer17_A = L.layerGroup();
+    }
+
+    // IDs delle fermate in ordine di andata (dal file linee_relazioni.txt)
+    const andataStopsIds = [
+        "8577834117", // capolinea
+        "1621660255",
+        "7608819302", 
+        "4589306199",
+        "4589306200",
+        "270231408",
+        "789981414",
+        "268201214",
+        "627851056",
+        "627851058",
+        "627851059",
+        "627851062", 
+        "627851064",
+        "273840241",
+        "273840235",
+        "273840233",
+        "270561142",
+        "4530646129",
+        "281171668"  // capolinea
+    ];
+
+    // Query Overpass per ottenere i dettagli delle fermate specifiche
+    const nodeIds = andataStopsIds.join(',');
+    const query = `[out:json];
+node(id:${nodeIds});
+out body;`;
+
+    const url = "https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query);
+
+    try {
+        let response = await fetch(url);
+        let data = await response.json();
+        
+        // Crea un map per accesso rapido ai dati delle fermate
+        const stopsData = {};
+        data.elements.forEach(node => {
+            stopsData[node.id] = node;
+        });
+
+        // Array per memorizzare le fermate ordinate per l'info panel
+        const orderedStops = [];
+
+        // Crea i marker nell'ordine corretto dell'andata
+        andataStopsIds.forEach((stopId, index) => {
+            const node = stopsData[stopId];
+            if (node) {
+                // Determina se è capolinea
+                const isCapolinea = index === 0 || index === andataStopsIds.length - 1;
+                const stopName = node.tags?.name || `Fermata ${stopId}`;
+                
+                // Icona uniforme per tutte le fermate (blu linea 17), capolinea in rosso
+                const marker = L.marker([node.lat, node.lon], {
+                    icon: L.divIcon({
+                        className: 'bus-stop-marker linea17',
+                        html: `<div style="
+                            background-color: ${isCapolinea ? '#FF5722' : 'blue'}; 
+                            color: white; 
+                            border-radius: 50%; 
+                            width: ${isCapolinea ? '25px' : '15px'}; 
+                            height: ${isCapolinea ? '25px' : '15px'}; 
+                            display: flex; 
+                            align-items: center; 
+                            justify-content: center; 
+                            font-size: ${isCapolinea ? '14px' : '0px'}; 
+                            font-weight: bold;
+                            border: 2px solid white;
+                            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+                        ">${isCapolinea ? 'C' : ''}</div>`,
+                        iconSize: [isCapolinea ? 25 : 20, isCapolinea ? 25 : 20]
+                    })
+                });
+
+                // Popup con informazioni dettagliate
+                const popupContent = `
+                    <div style="text-align: center;">
+                        <b style="color: blue;">Linea 17</b><br>
+                        <strong>${stopName}</strong><br>
+                        ${isCapolinea ? '<span style="color: #FF5722; font-weight: bold;">CAPOLINEA</span><br>' : ''}
+                        <small>Fermata ${index + 1} di ${andataStopsIds.length}</small>
+                    </div>
+                `;
+                
+                marker.bindPopup(popupContent);
+                window.busStopsLayer17_A.addLayer(marker);
+                
+                // Aggiungi alla lista per l'info panel
+                orderedStops.push({
+                    ...node,
+                    isCapolinea: isCapolinea,
+                    position: index + 1
+                });
+            }
+        });
+
+        // Aggiunge il layer alla mappa
+        window.map.addLayer(window.busStopsLayer17_A);
+        
+        // Imposta come layer attivo
+        window.activeBusStopsLayer = window.busStopsLayer17_A;
+
+        console.log(`Caricate ${orderedStops.length} fermate della linea 17 andata in ordine corretto`);
+
+        // Restituisce i dati invece di aggiornare il pannello
+        return orderedStops;
+
+    } catch (error) {
+        console.error("Errore nel caricamento delle fermate andata linea 17:", error);
+        return [];
     }
 }
 
@@ -294,8 +421,8 @@ async function getBusStopsAll17() {
         window.map.removeLayer(window.activeBusStopsLayer);
     }
 
-    // Carica prima l'andata
-    await getBusStopsA17();
+    // Carica prima l'andata e ottieni i dati per il pannello
+    const andataData = await getBusStopsA17Data();
     
     // Aspetta un momento e poi carica anche il ritorno
     setTimeout(async () => {
@@ -356,28 +483,28 @@ out body;`;
                     
                     const marker = L.marker([node.lat, node.lon], {
                         icon: L.divIcon({
-                            className: 'bus-stop-marker ritorno',
+                            className: 'bus-stop-marker linea17',
                             html: `<div style="
-                                background-color: ${isCapolinea ? '#FF5722' : '#FF9800'}; 
+                                background-color: ${isCapolinea ? '#FF5722' : 'blue'}; 
                                 color: white; 
                                 border-radius: 50%; 
-                                width: ${isCapolinea ? '25px' : '20px'}; 
-                                height: ${isCapolinea ? '25px' : '20px'}; 
+                                width: ${isCapolinea ? '25px' : '15px'}; 
+                                height: ${isCapolinea ? '25px' : '15px'}; 
                                 display: flex; 
                                 align-items: center; 
                                 justify-content: center; 
-                                font-size: ${isCapolinea ? '14px' : '12px'}; 
+                                font-size: ${isCapolinea ? '14px' : '0px'}; 
                                 font-weight: bold;
                                 border: 2px solid white;
                                 box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-                            ">${isCapolinea ? 'C' : 'R'}</div>`,
-                            iconSize: [isCapolinea ? 25 : 20, isCapolinea ? 25 : 20]
+                            ">${isCapolinea ? 'C' : ''}</div>`,
+                            iconSize: [isCapolinea ? 25 : 15, isCapolinea ? 25 : 15]
                         })
                     });
 
                     const popupContent = `
                         <div style="text-align: center;">
-                            <b style="color: #FF9800;">RITORNO</b><br>
+                            <b style="color: blue;">Linea 17</b><br>
                             <strong>${stopName}</strong><br>
                             ${isCapolinea ? '<span style="color: #FF5722; font-weight: bold;">CAPOLINEA</span><br>' : ''}
                             <small>Fermata ${index + 1} di ${ritornoStopsIds.length}</small>
@@ -399,7 +526,7 @@ out body;`;
             window.map.addLayer(window.busStopsLayer17_R);
             
             // Aggiorna il pannello con ENTRAMBE le direzioni
-            updateLineInfoPanelWithBothDirections17(orderedStopsRitorno);
+            updateLineInfoPanelWithBothDirections17(andataData, orderedStopsRitorno);
 
         } catch (error) {
             console.error("Errore nel caricamento delle fermate ritorno:", error);

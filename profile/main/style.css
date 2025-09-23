@@ -428,13 +428,17 @@ button:hover {
     filter: hue-rotate(30deg); /* Arancione per ritorno */
 }
 
-/* Stili per le direzioni nel pannello */
-.direction-header strong[style*="#4CAF50"] {
-    border-left: 4px solid #4CAF50;
-    padding-left: 8px;
+/* Stili specifici per linea 17 */
+.bus-stop-marker.linea17 {
+    transition: transform 0.2s ease;
 }
 
-.direction-header strong[style*="#FF9800"] {
-    border-left: 4px solid #FF9800;
+.bus-stop-marker.linea17:hover {
+    transform: scale(1.1);
+}
+
+/* Stili per le direzioni nel pannello */
+.direction-header strong[style*="blue"] {
+    border-left: 4px solid blue;
     padding-left: 8px;
 }

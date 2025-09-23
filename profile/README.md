@@ -68,9 +68,5 @@ Per ora non so una beca di js, quindi ho semplicemente importato la 17 colorando
 Contiene tutti i dati globali che servono per tutte le linee, in modo da importarli una volta e richiamarli solo quando necessario. Questo permetterà di creare un file per ogni linea (1,2,....17,...) e utilizzare il pacchetto solamente richiamandolo, senza dover creare una funzione per ogni file, sia per snellire il codice, sia per evitare errori di conflitto
 
 # PROBLEMI NOTI (da risolvere)
-## Linee
-Parecchio pesante caricare tutte le linee con fermate, bisognerà suddividere i carichi di gestione per alleggerire il display dei dati (per esempio, non caricare tutte le linee all'inizio, ma caricare solo la linea selezionata con fermata)
 ## Fermate
-Attualmente l'info-panel della linea funziona bene (meglio di quello che mi aspettassi), ma c'è un grave errore, le fermate sono caricate in maniera randomica. Bisognerà caricare in ordine le fermate e segnare il giro dell'autobus con andata e ritorno.
-
-Iimplementato andata, il ritorno ha qualche discordanza con la 17, ci sono alcune fermate che non c'entrano niente ed inoltre nell'infopanel principale non vengono caricate correttamente le andate
+Errore nel mostrare alcune fermate (letteralmente ho una fermata selezionata in turchia)
