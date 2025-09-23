@@ -229,16 +229,10 @@
                 case "2":
                     if (typeof getBusRoute2 === 'function') {
                         getBusRoute2();
-                        // Carica automaticamente le fermate dopo un breve delay per assicurarsi che la linea sia caricata
                         setTimeout(() => {
-                            if (typeof getBusStops2 === 'function') {
-                                getBusStops2();
-                                showLoadingMessage(`Linea ${line.number} caricata con fermate!`);
-                                // Aggiorna il pannello con le fermate quando sono caricate
-                                setTimeout(() => {
-                                    // Le fermate sono ora caricate, aggiorna il pannello
-                                    loadStopsForPanel(line.number);
-                                }, 500);
+                            if (typeof getBusStopsAll2 === 'function') {
+                                getBusStopsAll2(); // Carica sia andata che ritorno
+                                showLoadingMessage(`Linea ${line.number} - Andata e Ritorno caricate!`);
                             }
                         }, 1000);
                     }
@@ -620,6 +614,15 @@
             if (window.busStopsLayer17_R && window.map.hasLayer(window.busStopsLayer17_R)) {
                 window.map.removeLayer(window.busStopsLayer17_R);
             }
+
+            //andata ritorno della 2
+            if (window.busStopsLayer2_A && window.map.hasLayer(window.busStopsLayer2_A)) {
+                window.map.removeLayer(window.busStopsLayer2_A);
+            }
+            if (window.busStopsLayer2_R && window.map.hasLayer(window.busStopsLayer2_R)) {
+                window.map.removeLayer(window.busStopsLayer2_R);
+            }
+
         }
         
         // Funzione per aggiornare il pannello con le fermate quando sono disponibili
@@ -908,6 +911,141 @@ node(r)->.stops;
                             duration: 0.8
                         });
                         showToast(`Centrato su: ${stopName}`, "blue");
+                    }
+                });
+                
+                stopsList.appendChild(stopItem);
+            });
+            
+            // Mostra il pannello
+            panel.classList.add('active');
+        }
+        
+        // Funzione per aggiornare il pannello informativo della linea 2 con entrambe le direzioni
+        function updateLineInfoPanelWithBothDirections2(orderedStopsAndata, orderedStopsRitorno) {
+            const panel = document.getElementById('line-info-panel');
+            const lineNameElement = document.getElementById('line-name');
+            const colorIndicator = document.getElementById('line-color-indicator');
+            const stopsList = document.getElementById('stops-list');
+            
+            // Imposta il nome e colore della linea
+            lineNameElement.textContent = `Linea 2`;
+            colorIndicator.style.backgroundColor = "#FF6B35";
+            
+            // Pulisce la lista
+            stopsList.innerHTML = '';
+            
+            // Header ANDATA
+            const andataHeader = document.createElement('li');
+            andataHeader.className = 'direction-header';
+            andataHeader.innerHTML = `
+                <strong style="color: #FF6B35; display: flex; align-items: center; margin-bottom: 10px;">
+                    <span style="width: 12px; height: 12px; border-radius: 50%; background-color: #FF6B35; margin-right: 8px;"></span>
+                    VIA GALATTI -> VIA NAZIONALE
+                </strong>
+            `;
+            stopsList.appendChild(andataHeader);
+            
+            // Lista fermate andata ordinate
+            orderedStopsAndata.forEach((stop) => {
+                const stopItem = document.createElement('li');
+                stopItem.className = 'stop-item';
+                const stopName = stop.tags?.name || `Fermata ${stop.id}`;
+                
+                stopItem.innerHTML = `
+                    <div style="display: flex; align-items: center; padding: 8px 12px; cursor: pointer;">
+                        <span style="
+                            background-color: ${stop.isCapolinea ? '#FF5722' : '#FF6B35'}; 
+                            color: white; 
+                            border-radius: 50%; 
+                            width: 20px; 
+                            height: 20px; 
+                            display: flex; 
+                            align-items: center; 
+                            justify-content: center; 
+                            font-size: 11px; 
+                            font-weight: bold; 
+                            margin-right: 10px;
+                            flex-shrink: 0;
+                        ">${stop.position}</span>
+                        <div style="flex-grow: 1;">
+                            <div style="font-weight: ${stop.isCapolinea ? 'bold' : 'normal'}; color: ${stop.isCapolinea ? '#FF5722' : 'inherit'};">
+                                ${stopName}
+                                ${stop.isCapolinea ? ' <span style="font-size: 10px; color: #FF5722;">(CAPOLINEA)</span>' : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Aggiunge click per centrare la mappa sulla fermata
+                stopItem.addEventListener('click', function() {
+                    if (stop.lat && stop.lon) {
+                        window.map.setView([stop.lat, stop.lon], 16, {
+                            animate: true,
+                            duration: 0.8
+                        });
+                        showToast(`Centrato su: ${stopName}`, "#FF6B35");
+                    }
+                });
+                
+                stopsList.appendChild(stopItem);
+            });
+            
+            // Separatore
+            const separator1 = document.createElement('li');
+            separator1.style.height = '10px';
+            stopsList.appendChild(separator1);
+            
+            // Header RITORNO
+            const ritornoHeader = document.createElement('li');
+            ritornoHeader.className = 'direction-header';
+            ritornoHeader.innerHTML = `
+                <strong style="color: #FF6B35; display: flex; align-items: center; margin-bottom: 10px;">
+                    <span style="width: 12px; height: 12px; border-radius: 50%; background-color: #FF6B35; margin-right: 8px;"></span>
+                    VIA NAZIONALE -> VIA GALATTI
+                </strong>
+            `;
+            stopsList.appendChild(ritornoHeader);
+            
+            // Lista fermate ritorno ordinate
+            orderedStopsRitorno.forEach((stop) => {
+                const stopItem = document.createElement('li');
+                stopItem.className = 'stop-item';
+                const stopName = stop.tags?.name || `Fermata ${stop.id}`;
+                
+                stopItem.innerHTML = `
+                    <div style="display: flex; align-items: center; padding: 8px 12px; cursor: pointer;">
+                        <span style="
+                            background-color: ${stop.isCapolinea ? '#FF5722' : '#FF6B35'}; 
+                            color: white; 
+                            border-radius: 50%; 
+                            width: 20px; 
+                            height: 20px; 
+                            display: flex; 
+                            align-items: center; 
+                            justify-content: center; 
+                            font-size: 11px; 
+                            font-weight: bold; 
+                            margin-right: 10px;
+                            flex-shrink: 0;
+                        ">${stop.position}</span>
+                        <div style="flex-grow: 1;">
+                            <div style="font-weight: ${stop.isCapolinea ? 'bold' : 'normal'}; color: ${stop.isCapolinea ? '#FF5722' : 'inherit'};">
+                                ${stopName}
+                                ${stop.isCapolinea ? ' <span style="font-size: 10px; color: #FF5722;">(CAPOLINEA)</span>' : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Aggiunge click per centrare la mappa sulla fermata
+                stopItem.addEventListener('click', function() {
+                    if (stop.lat && stop.lon) {
+                        window.map.setView([stop.lat, stop.lon], 16, {
+                            animate: true,
+                            duration: 0.8
+                        });
+                        showToast(`Centrato su: ${stopName}`, "#FF6B35");
                     }
                 });
                 

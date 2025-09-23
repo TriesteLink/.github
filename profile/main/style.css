@@ -437,6 +437,15 @@ button:hover {
     transform: scale(1.1);
 }
 
+/* Stili specifici per linea 2 */
+.bus-stop-marker.linea2 {
+    transition: transform 0.2s ease;
+}
+
+.bus-stop-marker.linea2:hover {
+    transform: scale(1.1);
+}
+
 /* Stili per le direzioni nel pannello */
 .direction-header strong[style*="blue"] {
     border-left: 4px solid blue;

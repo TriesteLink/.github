@@ -3,6 +3,51 @@ linea 8 13296686,
 linea 42 1916681, 
 linea 44 1916912, 
 
+linea 2/_a:
+[out:json];
+rel(id:13286981);  // Relazioni della linea 17
+node(r)->.stops;            // Trova i nodi (fermate) collegati alle relazioni
+.stops out body;            // Output delle fermate
+fermate:
+269060873 // capolinea Via Galatti
+789906872
+789896987
+789845210
+789876206
+789876530
+8715832760
+8715832759
+7029958990
+4956308015
+4956308016
+7029958989
+8715832758
+7029958988
+651673083 // capolinea Via Nazionale (Piazzale Monte Re)
+
+linea 2/_b:
+[out:json];
+rel(id:13286982);  // Relazioni della linea 17
+node(r)->.stops;            // Trova i nodi (fermate) collegati alle relazioni
+.stops out body;            // Output delle fermate
+fermate:
+7029958988 // capolinea Via Nazionale (Piazzale Monte Re)
+8715832758
+7029958989
+7710286111
+4956308013
+9122425642
+9124030040
+9216810967
+789880589
+789876534
+789876207
+789845447
+789897439
+789908256
+789912569
+269060873 // capolinea Via Galatti
+
 in vista della modifica di dividere le fermate tra andata e ritorno nell'infopanel, iniziamo con la 17
 linea 17_a:
 [out:json];
