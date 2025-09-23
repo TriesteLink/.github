@@ -50,18 +50,42 @@ fermate:
 789912569
 269060873 // capolinea Via Galatti
 
+--------------------------------------------------------------------------------
+
+linea 3_a:
+[out:json];
+rel(id:13287123);  // Relazioni della linea 3
+node(r)->.stops;            // Trova i nodi (fermate) collegati alle relazioni
+.stops out body;
+335785492 // capolinea Conconello
+
+
+
+9141501129 // capolinea Stazione ferroviaria
+
+linea 3_b:
+[out:json];
+rel(id:13287124);  // Relazioni della linea 3
+node(r)->.stops;            // Trova i nodi (fermate) collegati alle relazioni
+.stops out body;
+9141501129 // capolinea Stazione ferroviaria
+
+
+
+335785492 // capolinea Conconello
+
 --------------------------------------------------------------------------
 
 linea 6_a:
 [out:json];
-rel(id:13295182);  // Relazioni della linea 17
+rel(id:13295182);  // Relazioni della linea 6
 node(r)->.stops;            // Trova i nodi (fermate) collegati alle relazioni
 .stops out body;
 fermate:
 
 
 linea 6_r:
-rel(id:13295183);  // Relazioni della linea 17
+rel(id:13295183);  // Relazioni della linea 6
 node(r)->.stops;            // Trova i nodi (fermate) collegati alle relazioni
 .stops out body;
 fermate:
