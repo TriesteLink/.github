@@ -8,8 +8,8 @@
 
 Sto utilizzando OpenStreetMap (OSM) come "fornitore" di informazioni, avvalendomi della loro guida sul sito, comprese di librerie e API, per ora il pacchetto che sto utilizzando è **Leaflet.js**, essendo che utilizziamo javascript: è facile da utilizzare e e per le integrazioni, ed inoltre permette di aggiungere i marker per fermate e tracciare le linee, sarà utile se integreremo il tempo reale.
 
-# OVERPASS API
-## Fermate
+## OVERPASS API
+### Fermate
 
 Con [questo sito](https://overpass-turbo.eu/index.html) posso usare il sistema per ottenere tutti i dati specifici.
 
@@ -33,7 +33,7 @@ Dato che come esempio uso la 17, in questo caso le fermate saranno in relazione 
 
 Poi con il js in pratica sistemo un marker per ogni fermata con il relativo nome in evidenza.
 
-## Linee
+### Linee
 
 Ora, le linee sono generalmente mappate come relazioni con il tag type=route e route=bus. Ora, questo comando purtroppo non mostra sulla mappa nessun tipo di segno visivo, ma rimanda in console svariate coordiante, quindi, presumo che saranno da tracciare a mano, utilzzando comandi (che devo ancora scoprire)
 
@@ -62,9 +62,3 @@ ed importare le linee della 17 e 17/.
 ![alt text](image-1.png) infatti
 
 Per ora non so una beca di js, quindi ho semplicemente importato la 17 colorandola di blu,  e disattivando le fermate
-# ORGANIZZAZIONE CODICE
-## mapConfig.js
-
-Contiene tutti i dati globali che servono per tutte le linee, in modo da importarli una volta e richiamarli solo quando necessario. Questo permetterà di creare un file per ogni linea (1,2,....17,...) e utilizzare il pacchetto solamente richiamandolo, senza dover creare una funzione per ogni file, sia per snellire il codice, sia per evitare errori di conflitto
-
-# PROBLEMI NOTI (da risolvere)
