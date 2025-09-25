@@ -414,10 +414,12 @@ button:hover {
     transform: translateX(3px);
 }
 
+/*
 .bus-stop-marker {
     border: 2px solid white !important;
     box-shadow: 0 2px 4px rgba(0,0,0,0.3) !important;
 }
+*/
 
 /* Stili specifici per andata e ritorno */
 .bus-stop-marker.andata {
