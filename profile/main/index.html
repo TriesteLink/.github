@@ -100,12 +100,10 @@
     <!--questa è la sezione inlcusione script delle linee-->
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script src="mapConfig.js"></script>
-    <script src="2.js"></script>
-    <script src="17.js"></script>
-    <script src="17b.js"></script>
-    <script src="6.js"></script>
-    <script src="9.js"></script>
-    <script src="36.js"></script>
+    <!-- Sistema parametrico modulare -->
+    <script src="linesConfig.js"></script>
+    <script src="busLinesFunctions.js"></script>
+    <script src="busLinesManager.js"></script>
 
 
 
@@ -163,14 +161,13 @@
     </script>
 
     <script>
-        // Configurazione delle linee disponibili
+        // Configurazione delle linee disponibili (dal sistema parametrico)
         const availableLines = [
-            { number: "2", color: "#FF6B35", file: "2.js", displayName: "Linea 2" },
-            { number: "6", color: "green", file: "6.js", displayName: "Linea 6" },
-            { number: "9", color: "orange", file: "9.js", displayName: "Linea 9" },
-            { number: "17", color: "blue", file: "17.js", displayName: "Linea 17" },
-            { number: "17/", color: "red", file: "17b.js", displayName: "Linea 17/" },
-            { number: "36", color: "violet", file: "36.js", displayName: "Linea 36" }
+            { number: "2", color: "#FF6B35", displayName: "Linea 2" },
+            { number: "6", color: "green", displayName: "Linea 6" },
+            { number: "17", color: "blue", displayName: "Linea 17" },
+            { number: "17B", color: "red", displayName: "Linea 17B" },
+            { number: "36", color: "violet", displayName: "Linea 36" }
         ];
 
         // Funzione per generare la lista dinamicamente
@@ -216,7 +213,7 @@
             });
         }
 
-        // Funzione per caricare una linea specifica
+        // Funzione per caricare una linea specifica (Sistema parametrico)
         function loadBusLine(line) {
             // Nasconde tutte le altre linee attive prima di caricare la nuova
             hideAllLines();
@@ -224,116 +221,65 @@
             // Mostra immediatamente il pannello con informazioni di base
             showLineInfoPanel(line.number, line.color, []);
             
-            // Carica la linea specifica E le sue fermate automaticamente
-            switch(line.number) {
-                case "2":
-                    if (typeof getBusRoute2 === 'function') {
-                        getBusRoute2();
-                        setTimeout(() => {
-                            if (typeof getBusStopsAll2 === 'function') {
-                                getBusStopsAll2(); // Carica sia andata che ritorno
-                                showLoadingMessage(`Linea ${line.number} - Andata e Ritorno caricate!`);
-                            }
-                        }, 1000);
-                    }
-                    break;
-                case "6":
-                    if (typeof getBusRoute6 === 'function') {
-                        getBusRoute6();
-                        // Carica automaticamente le fermate dopo un breve delay per assicurarsi che la linea sia caricata
-                        setTimeout(() => {
-                            if (typeof getBusStops6 === 'function') {
-                                getBusStops6();
-                                showLoadingMessage(`Linea ${line.number} caricata con fermate!`);
-                                setTimeout(() => {
-                                    loadStopsForPanel(line.number);
-                                }, 500);
-                            }
-                        }, 1000);
-                    }
-                    break;
-                case "9":
-                    if (typeof getBusRoute9 === 'function') {
-                        getBusRoute9();
-                        setTimeout(() => {
-                            if (typeof getBusStops9 === 'function') {
-                                getBusStops9();
-                                showLoadingMessage(`Linea ${line.number} caricata con fermate!`);
-                                setTimeout(() => {
-                                    loadStopsForPanel(line.number);
-                                }, 500);
-                            }
-                        }, 1000);
-                    }
-                    break;
-                case "17":
-                    if (typeof getBusRoute17 === 'function') {
-                        getBusRoute17();
-                        setTimeout(() => {
-                            if (typeof getBusStopsAll17 === 'function') {
-                                getBusStopsAll17(); // Carica sia andata che ritorno
-                                showLoadingMessage(`Linea ${line.number} - Andata e Ritorno caricate!`);
-                            }
-                        }, 1000);
-                    }
-                    break;
-                case "17/":
-                    if (typeof getBusRoute17B === 'function') {
-                        getBusRoute17B();
-                        setTimeout(() => {
-                            if (typeof getBusStops17B === 'function') {
-                                getBusStops17B();
-                                showLoadingMessage(`Linea ${line.number} caricata con fermate!`);
-                                setTimeout(() => {
-                                    loadStopsForPanel(line.number);
-                                }, 500);
-                            }
-                        }, 1000);
-                    }
-                    break;
-                case "36":
-                    if (typeof getBusRoute36 === 'function') {
-                        getBusRoute36();
-                        setTimeout(() => {
-                            if (typeof getBusStops36 === 'function') {
-                                getBusStops36();
-                                showLoadingMessage(`Linea ${line.number} caricata con fermate!`);
-                                setTimeout(() => {
-                                    loadStopsForPanel(line.number);
-                                }, 500);
-                            }
-                        }, 1000);
-                    }
-                    break;
-            }
+            // Usa il nuovo sistema parametrico per caricare la linea
+            const lineNumber = line.number;
+            
+            // Carica il percorso della linea
+            getBusRoute(lineNumber, line.color);
+            
+            // Dopo un breve delay, carica le fermate
+            setTimeout(() => {
+                // Per le linee con fermate ordinate (2 e 17), carica entrambe le direzioni
+                if (lineNumber === "2" || lineNumber === 2 || lineNumber === "17" || lineNumber === 17) {
+                    getBusStopsAll(lineNumber);
+                    showLoadingMessage(`Linea ${lineNumber} - Andata e Ritorno caricate!`);
+                } else {
+                    // Per le altre linee, usa il sistema di fallback
+                    getBusStops(lineNumber);
+                    showLoadingMessage(`Linea ${lineNumber} caricata con fermate!`);
+                    
+                    // Carica i dati per il pannello dopo un altro delay
+                    setTimeout(() => {
+                        loadStopsForPanel(lineNumber);
+                    }, 500);
+                }
+            }, 1000);
         }
 
-        // Funzione per nascondere tutte le linee attive
+        // Funzione per nascondere tutte le linee attive (Sistema parametrico)
         function hideAllLines() {
             // Chiude il pannello informativo
             closeLineInfoPanel();
             
-            // Rimuove tutti i layer delle route
-            if (window.routeLayer2 && window.map.hasLayer(window.routeLayer2)) {
-                window.map.removeLayer(window.routeLayer2);
-            }
-            if (window.routeLayer6 && window.map.hasLayer(window.routeLayer6)) {
-                window.map.removeLayer(window.routeLayer6);
-            }
-            if (window.routeLayer9 && window.map.hasLayer(window.routeLayer9)) {
-                window.map.removeLayer(window.routeLayer9);
-            }
-            if (window.routeLayer17 && window.map.hasLayer(window.routeLayer17)) {
-                window.map.removeLayer(window.routeLayer17);
-            }
-            if (window.routeLayer17B && window.map.hasLayer(window.routeLayer17B)) {
-                window.map.removeLayer(window.routeLayer17B);
-            }
-            if (window.routeLayer36 && window.map.hasLayer(window.routeLayer36)) {
-                window.map.removeLayer(window.routeLayer36);
-            }
+            // Ottieni tutte le linee disponibili e rimuovi i loro layer
+            const allLineNumbers = getAvailableLines();
+            
+            allLineNumbers.forEach(lineNumber => {
+                // Rimuovi layer del percorso
+                const routeLayerName = `routeLayer${lineNumber}`;
+                if (window[routeLayerName] && window.map.hasLayer(window[routeLayerName])) {
+                    window.map.removeLayer(window[routeLayerName]);
+                }
+                
+                // Rimuovi layer delle fermate
+                const busStopsLayerName = `busStopsLayer${lineNumber}`;
+                if (window[busStopsLayerName] && window.map.hasLayer(window[busStopsLayerName])) {
+                    window.map.removeLayer(window[busStopsLayerName]);
+                }
+                
+                // Rimuovi layer andata/ritorno se esistono
+                const andataLayerName = `busStopsLayer${lineNumber}_A`;
+                const ritornoLayerName = `busStopsLayer${lineNumber}_R`;
+                
+                if (window[andataLayerName] && window.map.hasLayer(window[andataLayerName])) {
+                    window.map.removeLayer(window[andataLayerName]);
+                }
+                if (window[ritornoLayerName] && window.map.hasLayer(window[ritornoLayerName])) {
+                    window.map.removeLayer(window[ritornoLayerName]);
+                }
+            });
 
-            // Rimuove tutti i layer delle fermate
+            // Rimuove il layer attivo generale
             if (window.activeBusStopsLayer && window.map.hasLayer(window.activeBusStopsLayer)) {
                 window.map.removeLayer(window.activeBusStopsLayer);
             }
@@ -376,45 +322,14 @@
             showToast("Vista panoramica", "#007bff");
         }
 
-        // Funzione per caricare tutte le linee disponibili
+        // Funzione per caricare tutte le linee disponibili (Sistema parametrico)
         function loadAllLines() {
             // Carica tutte le linee dalla configurazione (solo le linee, non le fermate)
             // Questo crea una vista panoramica di tutte le linee disponibili
             availableLines.forEach((line, index) => {
                 // Aggiungi un piccolo delay tra ogni linea per evitare sovraccarico
                 setTimeout(() => {
-                    switch(line.number) {
-                        case "2":
-                            if (typeof getBusRoute2 === 'function') {
-                                getBusRoute2();
-                            }
-                            break;
-                        case "6":
-                            if (typeof getBusRoute6 === 'function') {
-                                getBusRoute6();
-                            }
-                            break;
-                        case "9":
-                            if (typeof getBusRoute9 === 'function') {
-                                getBusRoute9();
-                            }
-                            break;
-                        case "17":
-                            if (typeof getBusRoute17 === 'function') {
-                                getBusRoute17();
-                            }
-                            break;
-                        case "17/":
-                            if (typeof getBusRoute17B === 'function') {
-                                getBusRoute17B();
-                            }
-                            break;
-                        case "36":
-                            if (typeof getBusRoute36 === 'function') {
-                                getBusRoute36();
-                            }
-                            break;
-                    }
+                    getBusRoute(line.number, line.color);
                 }, index * 300); // 300ms di delay tra ogni linea
             });
 
@@ -493,17 +408,25 @@
             showToast(message, "#28a745"); // Verde per indicare successo
         }
 
-        // Genera la lista e carica tutte le linee quando la pagina è caricata
-        
+        // Genera la lista e inizializza il sistema parametrico quando la pagina è caricata
         document.addEventListener('DOMContentLoaded', function() {
+            // Genera la lista delle linee basata sulla configurazione parametrica
             generateBusList();
             
-            /*// Carica tutte le linee per la vista panoramica iniziale
-            setTimeout(() => {
-                loadAllLines();
-                showToast("Benvenuto in TriesteLink - Vista panoramica caricata", "#007bff");
-            }, 2000); // Aspetta 2 secondi che tutto sia inizializzato
-            */
+            // Verifica che il sistema parametrico sia caricato
+            if (typeof getAvailableLines === 'function') {
+                console.log('✅ Sistema parametrico caricato correttamente!');
+                console.log('📋 Linee disponibili:', getAvailableLines());
+                showToast("TriesteLink - Sistema parametrico attivo!", "#007bff");
+            } else {
+                console.error('❌ Errore: Sistema parametrico non caricato');
+                showToast("Errore: Sistema non disponibile", "#dc3545");
+            }
+            
+            // Opzionale: Carica tutte le linee per la vista panoramica iniziale
+            // setTimeout(() => {
+            //     loadAllLines();
+            // }, 2000);
         });
     </script>
 
@@ -560,69 +483,40 @@
             hideAllLinesWithoutClosingPanel();
         }
         
-        // Funzione helper che nasconde le linee senza chiudere il pannello
+        // Funzione helper che nasconde le linee senza chiudere il pannello (Sistema parametrico)
         function hideAllLinesWithoutClosingPanel() {
-            // Rimuove tutti i layer delle route
-            if (window.routeLayer2 && window.map.hasLayer(window.routeLayer2)) {
-                window.map.removeLayer(window.routeLayer2);
-            }
-            if (window.routeLayer6 && window.map.hasLayer(window.routeLayer6)) {
-                window.map.removeLayer(window.routeLayer6);
-            }
-            if (window.routeLayer9 && window.map.hasLayer(window.routeLayer9)) {
-                window.map.removeLayer(window.routeLayer9);
-            }
-            if (window.routeLayer17 && window.map.hasLayer(window.routeLayer17)) {
-                window.map.removeLayer(window.routeLayer17);
-            }
-            if (window.routeLayer17B && window.map.hasLayer(window.routeLayer17B)) {
-                window.map.removeLayer(window.routeLayer17B);
-            }
-            if (window.routeLayer36 && window.map.hasLayer(window.routeLayer36)) {
-                window.map.removeLayer(window.routeLayer36);
-            }
+            // Ottieni tutte le linee disponibili e rimuovi i loro layer
+            const allLineNumbers = getAvailableLines();
+            
+            allLineNumbers.forEach(lineNumber => {
+                // Rimuovi layer del percorso
+                const routeLayerName = `routeLayer${lineNumber}`;
+                if (window[routeLayerName] && window.map.hasLayer(window[routeLayerName])) {
+                    window.map.removeLayer(window[routeLayerName]);
+                }
+                
+                // Rimuovi layer delle fermate
+                const busStopsLayerName = `busStopsLayer${lineNumber}`;
+                if (window[busStopsLayerName] && window.map.hasLayer(window[busStopsLayerName])) {
+                    window.map.removeLayer(window[busStopsLayerName]);
+                }
+                
+                // Rimuovi layer andata/ritorno se esistono
+                const andataLayerName = `busStopsLayer${lineNumber}_A`;
+                const ritornoLayerName = `busStopsLayer${lineNumber}_R`;
+                
+                if (window[andataLayerName] && window.map.hasLayer(window[andataLayerName])) {
+                    window.map.removeLayer(window[andataLayerName]);
+                }
+                if (window[ritornoLayerName] && window.map.hasLayer(window[ritornoLayerName])) {
+                    window.map.removeLayer(window[ritornoLayerName]);
+                }
+            });
 
-            // Rimuove tutti i layer delle fermate/marker
+            // Rimuove il layer attivo generale
             if (window.activeBusStopsLayer && window.map.hasLayer(window.activeBusStopsLayer)) {
                 window.map.removeLayer(window.activeBusStopsLayer);
             }
-            
-            // Rimuove tutti i layer delle fermate specifici per linea
-            if (window.busStopsLayer2 && window.map.hasLayer(window.busStopsLayer2)) {
-                window.map.removeLayer(window.busStopsLayer2);
-            }
-            if (window.busStopsLayer6 && window.map.hasLayer(window.busStopsLayer6)) {
-                window.map.removeLayer(window.busStopsLayer6);
-            }
-            if (window.busStopsLayer9 && window.map.hasLayer(window.busStopsLayer9)) {
-                window.map.removeLayer(window.busStopsLayer9);
-            }
-            if (window.busStopsLayer17 && window.map.hasLayer(window.busStopsLayer17)) {
-                window.map.removeLayer(window.busStopsLayer17);
-            }
-            if (window.busStopsLayer17B && window.map.hasLayer(window.busStopsLayer17B)) {
-                window.map.removeLayer(window.busStopsLayer17B);
-            }
-            if (window.busStopsLayer36 && window.map.hasLayer(window.busStopsLayer36)) {
-                window.map.removeLayer(window.busStopsLayer36);
-            }
-            
-            // Se hai implementato le funzioni separate per andata/ritorno della linea 17
-            if (window.busStopsLayer17_A && window.map.hasLayer(window.busStopsLayer17_A)) {
-                window.map.removeLayer(window.busStopsLayer17_A);
-            }
-            if (window.busStopsLayer17_R && window.map.hasLayer(window.busStopsLayer17_R)) {
-                window.map.removeLayer(window.busStopsLayer17_R);
-            }
-
-            //andata ritorno della 2
-            if (window.busStopsLayer2_A && window.map.hasLayer(window.busStopsLayer2_A)) {
-                window.map.removeLayer(window.busStopsLayer2_A);
-            }
-            if (window.busStopsLayer2_R && window.map.hasLayer(window.busStopsLayer2_R)) {
-                window.map.removeLayer(window.busStopsLayer2_R);
-            }
-
         }
         
         // Funzione per aggiornare il pannello con le fermate quando sono disponibili
@@ -665,33 +559,16 @@
             }
         }
         
-        // Funzione per caricare le fermate nel pannello da una linea specifica
+        // Funzione per caricare le fermate nel pannello da una linea specifica (Sistema parametrico)
         function loadStopsForPanel(lineNumber) {
-            // Facciamo una nuova query per ottenere le fermate con i loro nomi
-            let relationIds = '';
-            
-            switch(lineNumber) {
-                case "2":
-                    relationIds = "13286981,13286982";
-                    break;
-                case "6":
-                    relationIds = "13295182,13295183";
-                    break;
-                case "9":
-                    relationIds = "13297000,13297001";
-                    break;
-                case "17":
-                    relationIds = "13300193,13300194";
-                    break;
-                case "17/":
-                    relationIds = "13307218,13300195";
-                    break;
-                case "36":
-                    relationIds = "13365168,13365169";
-                    break;
-                default:
-                    return;
+            // Usa la configurazione parametrica per ottenere gli ID delle relazioni
+            const config = getLineConfig(lineNumber);
+            if (!config) {
+                console.error(`Configurazione non trovata per la linea ${lineNumber}`);
+                return;
             }
+            
+            const relationIds = `${config.relations.andata},${config.relations.ritorno}`;
             
             const query = `[out:json];
 rel(id:${relationIds});
@@ -921,6 +798,147 @@ node(r)->.stops;
             panel.classList.add('active');
         }
         
+        // Funzione generica per aggiornare il pannello con entrambe le direzioni
+        function updateLineInfoPanelWithBothDirections(lineNumber, orderedStopsAndata, orderedStopsRitorno) {
+            const config = getLineConfig(lineNumber);
+            if (!config) {
+                console.error(`Configurazione non trovata per la linea ${lineNumber}`);
+                return;
+            }
+            
+            const panel = document.getElementById('line-info-panel');
+            const lineNameElement = document.getElementById('line-name');
+            const colorIndicator = document.getElementById('line-color-indicator');
+            const stopsList = document.getElementById('stops-list');
+            
+            // Imposta il nome e colore della linea
+            lineNameElement.textContent = `Linea ${lineNumber}`;
+            colorIndicator.style.backgroundColor = config.color;
+            
+            // Pulisce la lista
+            stopsList.innerHTML = '';
+            
+            // Header ANDATA
+            const andataHeader = document.createElement('li');
+            andataHeader.className = 'direction-header';
+            andataHeader.innerHTML = `
+                <strong style="color: ${config.color}; display: flex; align-items: center; margin-bottom: 10px;">
+                    <span style="width: 12px; height: 12px; border-radius: 50%; background-color: ${config.color}; margin-right: 8px;"></span>
+                    ANDATA (${orderedStopsAndata.length} fermate)
+                </strong>
+            `;
+            stopsList.appendChild(andataHeader);
+            
+            // Lista fermate andata ordinate
+            orderedStopsAndata.forEach((stop) => {
+                const stopItem = document.createElement('li');
+                stopItem.className = 'stop-item';
+                const stopName = stop.tags?.name || `Fermata ${stop.id}`;
+                
+                stopItem.innerHTML = `
+                    <div style="display: flex; align-items: center; padding: 8px 12px; cursor: pointer;">
+                        <span style="
+                            background-color: ${stop.isCapolinea ? '#FF5722' : config.color}; 
+                            color: white; 
+                            border-radius: 50%; 
+                            width: 20px; 
+                            height: 20px; 
+                            display: flex; 
+                            align-items: center; 
+                            justify-content: center; 
+                            font-size: 11px; 
+                            font-weight: bold; 
+                            margin-right: 10px;
+                            flex-shrink: 0;
+                        ">${stop.position}</span>
+                        <div style="flex-grow: 1;">
+                            <div style="font-weight: ${stop.isCapolinea ? 'bold' : 'normal'}; color: ${stop.isCapolinea ? '#FF5722' : 'inherit'};">
+                                ${stopName}
+                                ${stop.isCapolinea ? ' <span style="font-size: 10px; color: #FF5722;">(CAPOLINEA)</span>' : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Aggiunge click per centrare la mappa sulla fermata
+                stopItem.addEventListener('click', function() {
+                    if (stop.lat && stop.lon) {
+                        window.map.setView([stop.lat, stop.lon], 16, {
+                            animate: true,
+                            duration: 0.8
+                        });
+                        showToast(`Centrato su: ${stopName}`, config.color);
+                    }
+                });
+                
+                stopsList.appendChild(stopItem);
+            });
+            
+            // Separatore
+            const separator1 = document.createElement('li');
+            separator1.style.height = '10px';
+            stopsList.appendChild(separator1);
+            
+            // Header RITORNO
+            const ritornoHeader = document.createElement('li');
+            ritornoHeader.className = 'direction-header';
+            ritornoHeader.innerHTML = `
+                <strong style="color: ${config.color}; display: flex; align-items: center; margin-bottom: 10px;">
+                    <span style="width: 12px; height: 12px; border-radius: 50%; background-color: ${config.color}; margin-right: 8px;"></span>
+                    RITORNO (${orderedStopsRitorno.length} fermate)
+                </strong>
+            `;
+            stopsList.appendChild(ritornoHeader);
+            
+            // Lista fermate ritorno ordinate
+            orderedStopsRitorno.forEach((stop) => {
+                const stopItem = document.createElement('li');
+                stopItem.className = 'stop-item';
+                const stopName = stop.tags?.name || `Fermata ${stop.id}`;
+                
+                stopItem.innerHTML = `
+                    <div style="display: flex; align-items: center; padding: 8px 12px; cursor: pointer;">
+                        <span style="
+                            background-color: ${stop.isCapolinea ? '#FF5722' : config.color}; 
+                            color: white; 
+                            border-radius: 50%; 
+                            width: 20px; 
+                            height: 20px; 
+                            display: flex; 
+                            align-items: center; 
+                            justify-content: center; 
+                            font-size: 11px; 
+                            font-weight: bold; 
+                            margin-right: 10px;
+                            flex-shrink: 0;
+                        ">${stop.position}</span>
+                        <div style="flex-grow: 1;">
+                            <div style="font-weight: ${stop.isCapolinea ? 'bold' : 'normal'}; color: ${stop.isCapolinea ? '#FF5722' : 'inherit'};">
+                                ${stopName}
+                                ${stop.isCapolinea ? ' <span style="font-size: 10px; color: #FF5722;">(CAPOLINEA)</span>' : ''}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Aggiunge click per centrare la mappa sulla fermata
+                stopItem.addEventListener('click', function() {
+                    if (stop.lat && stop.lon) {
+                        window.map.setView([stop.lat, stop.lon], 16, {
+                            animate: true,
+                            duration: 0.8
+                        });
+                        showToast(`Centrato su: ${stopName}`, config.color);
+                    }
+                });
+                
+                stopsList.appendChild(stopItem);
+            });
+            
+            // Mostra il pannello
+            panel.classList.add('active');
+        }
+
         // Funzione per aggiornare il pannello informativo della linea 2 con entrambe le direzioni
         function updateLineInfoPanelWithBothDirections2(orderedStopsAndata, orderedStopsRitorno) {
             const panel = document.getElementById('line-info-panel');
