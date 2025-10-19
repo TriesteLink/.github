@@ -1,0 +1,16 @@
+# VS Code configuration locale
+.vscode/launch.json
+
+# Altri file di configurazione locale VS Code
+.vscode/settings.json
+
+# File temporanei
+*.tmp
+*.temp
+
+# Logs
+*.log
+
+# Directory dei profili di debug
+.vscode/edge-profile/
+.vscode/chrome-profile/
