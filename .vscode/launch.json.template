@@ -1,0 +1,13 @@
+{
+    // Template per launch.json - Copia questo file come .vscode/launch.json
+    // e personalizza i percorsi per il tuo PC
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "msedge",
+            "request": "launch",
+            "name": "Open with Edge",
+            "file": "${workspaceFolder}/profile/main/index.html"
+        }
+    ]
+}
