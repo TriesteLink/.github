@@ -6,6 +6,10 @@ const LINES_CONFIG = {
             andata: "13286981",
             ritorno: "13286982"
         },
+        directions: {
+            andata: "Via Galatti → Via Nazionale",
+            ritorno: "Via Nazionale → Via Galatti"
+        },
         stops: {
             andata: [
                 "269060873", // capolinea Via Galatti
@@ -44,28 +48,36 @@ const LINES_CONFIG = {
             ]
         }
     },
-    
+
     6: {
         color: "green",
         relations: {
             andata: "13295182",
             ritorno: "13295183"
         },
+        directions: {
+            andata: "Andata", // Da aggiornare con i capolinea corretti
+            ritorno: "Ritorno"
+        },
         stops: {
             andata: [], // Da completare con i dati corretti
             ritorno: []
         }
     },
-    
+
     17: {
         color: "blue",
         relations: {
             andata: "13300193",
             ritorno: "13300194"
         },
+        directions: {
+            andata: "Campo Marzio → San Cilino",
+            ritorno: "San Cilino → Campo Marzio"
+        },
         stops: {
             andata: [
-                "8577834117", // capolinea
+                "8577834117", // capolinea Campo Marzio
                 "1621660255",
                 "7608819302",
                 "4589306199",
@@ -83,10 +95,10 @@ const LINES_CONFIG = {
                 "273840233",
                 "270561142",
                 "4530646129",
-                "281171668"  // capolinea
+                "281171668"  // capolinea San Cilino
             ],
             ritorno: [
-                "281171668", // capolinea
+                "281171668", // capolinea San Cilino
                 "390873856",
                 "270561143",
                 "273840231",
@@ -105,28 +117,36 @@ const LINES_CONFIG = {
                 "9109518640",
                 "1621660256",
                 "296398798",
-                "8577834117"  // capolinea
+                "8577834117"  // capolinea Campo Marzio
             ]
         }
     },
-    
+
     "17B": {
         color: "red",
         relations: {
             andata: "13307218",
             ritorno: "13300195"
         },
+        directions: {
+            andata: "Andata", // Da aggiornare con i capolinea corretti
+            ritorno: "Ritorno"
+        },
         stops: {
             andata: [], // Da completare con i dati corretti
             ritorno: []
         }
     },
-    
+
     36: {
         color: "violet",
         relations: {
             andata: "13365168",
             ritorno: "13365169"
+        },
+        directions: {
+            andata: "Andata", // Da aggiornare con i capolinea corretti
+            ritorno: "Ritorno"
         },
         stops: {
             andata: [], // Da completare con i dati corretti

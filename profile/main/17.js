@@ -75,8 +75,8 @@ async function getBusStopsA17() {
     // Query Overpass per ottenere i dettagli delle fermate specifiche
     const nodeIds = andataStopsIds.join(',');
     const query = `[out:json];
-node(id:${nodeIds});
-out body;`;
+    node(id:${nodeIds});
+    out body;`;
 
     const url = "https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query);
 

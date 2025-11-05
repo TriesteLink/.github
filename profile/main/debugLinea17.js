@@ -20,20 +20,20 @@ setTimeout(async () => {
         const ritornoData = await getBusStopsDirectionSilent(17, "ritorno");
         console.log('✅ Dati ritorno ricevuti:', ritornoData);
         console.log('📊 Numero fermate ritorno:', ritornoData.length);
-        
+
         if (ritornoData.length === 0) {
             console.error('❌ PROBLEMA: 0 fermate ritorno caricate');
-            
+
             // Test manuale della query
             const nodeIds = config17.stops.ritorno.join(',');
             const query = `[out:json];
 node(id:${nodeIds});
 out body;`;
             const url = "https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query);
-            
+
             console.log('🔗 URL query Overpass:', url);
             console.log('📝 Query:', query);
-            
+
             // Test della fetch
             fetch(url)
                 .then(response => response.json())

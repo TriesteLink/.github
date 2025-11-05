@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="it">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,9 +23,11 @@
             width: 350px;
             text-align: center;
         }
+
         .info-popup.hidden {
             display: none;
         }
+
         .info-popup .close-btn {
             position: absolute;
             top: 10px;
@@ -34,6 +37,7 @@
             font-size: 16px;
             cursor: pointer;
         }
+
         /*.logo-img {
             height: 30px;
             width: auto;
@@ -42,12 +46,13 @@
         }*/
     </style>
 </head>
+
 <body>
     <!-- Barra superiore con titolo centrato e bottoni a destra -->
     <div class="top-bar">
         <h1>
             <!--logo <img src="TriesteLink.jpg" alt="TriesteLink Logo" class="logo-img">
-            TriesteLink--> 
+            TriesteLink-->
             TriesteLink
         </h1>
         <div class="top-buttons">
@@ -111,7 +116,7 @@
         function showBusList() {
             // Chiudi il pannello informativo della linea se è aperto
             closeLineInfoPanel();
-            
+
             // Apri la lista degli autobus
             document.getElementById('bus-list').style.transform = 'translateY(0)';
         }
@@ -147,7 +152,7 @@
                         popupAnchor: [0, -40] // Punto di ancoraggio del popup
                     })
                     // Aggiungi un marker sulla mappa
-                    const marker = L.marker([latitude, longitude], {icon: sonqua}).addTo(map);
+                    const marker = L.marker([latitude, longitude], { icon: sonqua }).addTo(map);
                     marker.bindPopup("Sei qui!").openPopup();
 
                     // Centra la mappa sulla posizione
@@ -181,17 +186,17 @@
                 li.style.cursor = 'pointer';
                 li.style.borderLeft = `5px solid ${line.color}`;
                 li.style.paddingLeft = '15px';
-                
+
                 // Aggiunge event listener per il click
-                li.addEventListener('click', function() {
+                li.addEventListener('click', function () {
                     // Feedback visivo immediato
                     li.style.backgroundColor = line.color;
                     li.style.color = 'white';
                     li.innerHTML = `${line.displayName} - Caricamento...`;
-                    
+
                     loadBusLine(line);
                     closeBusList(); // Chiude la lista dopo aver selezionato
-                    
+
                     // Ripristina l'aspetto originale dopo 2 secondi
                     setTimeout(() => {
                         li.innerHTML = line.displayName;
@@ -201,11 +206,11 @@
                 });
 
                 // Effetto hover
-                li.addEventListener('mouseenter', function() {
+                li.addEventListener('mouseenter', function () {
                     li.style.backgroundColor = '#e8f4f8';
                 });
-                
-                li.addEventListener('mouseleave', function() {
+
+                li.addEventListener('mouseleave', function () {
                     li.style.backgroundColor = '';
                 });
 
@@ -217,16 +222,16 @@
         function loadBusLine(line) {
             // Nasconde tutte le altre linee attive prima di caricare la nuova
             hideAllLines();
-            
+
             // Mostra immediatamente il pannello con informazioni di base
             showLineInfoPanel(line.number, line.color, []);
-            
+
             // Usa il nuovo sistema parametrico per caricare la linea
             const lineNumber = line.number;
-            
+
             // Carica il percorso della linea
             getBusRoute(lineNumber, line.color);
-            
+
             // Dopo un breve delay, carica le fermate
             setTimeout(() => {
                 // Per le linee con fermate ordinate (2 e 17), carica entrambe le direzioni
@@ -237,7 +242,7 @@
                     // Per le altre linee, usa il sistema di fallback
                     getBusStops(lineNumber);
                     showLoadingMessage(`Linea ${lineNumber} caricata con fermate!`);
-                    
+
                     // Carica i dati per il pannello dopo un altro delay
                     setTimeout(() => {
                         loadStopsForPanel(lineNumber);
@@ -250,27 +255,27 @@
         function hideAllLines() {
             // Chiude il pannello informativo
             closeLineInfoPanel();
-            
+
             // Ottieni tutte le linee disponibili e rimuovi i loro layer
             const allLineNumbers = getAvailableLines();
-            
+
             allLineNumbers.forEach(lineNumber => {
                 // Rimuovi layer del percorso
                 const routeLayerName = `routeLayer${lineNumber}`;
                 if (window[routeLayerName] && window.map.hasLayer(window[routeLayerName])) {
                     window.map.removeLayer(window[routeLayerName]);
                 }
-                
+
                 // Rimuovi layer delle fermate
                 const busStopsLayerName = `busStopsLayer${lineNumber}`;
                 if (window[busStopsLayerName] && window.map.hasLayer(window[busStopsLayerName])) {
                     window.map.removeLayer(window[busStopsLayerName]);
                 }
-                
+
                 // Rimuovi layer andata/ritorno se esistono
                 const andataLayerName = `busStopsLayer${lineNumber}_A`;
                 const ritornoLayerName = `busStopsLayer${lineNumber}_R`;
-                
+
                 if (window[andataLayerName] && window.map.hasLayer(window[andataLayerName])) {
                     window.map.removeLayer(window[andataLayerName]);
                 }
@@ -298,26 +303,26 @@
 
             // 1. Nascondi tutte le linee e fermate
             hideAllLines();
-            
+
             // 2. Chiudi il pannello laterale
             closeLineInfoPanel();
-            
+
             // 3. Rimuovi eventuali marker di geolocalizzazione
             clearLocationMarkers();
-            
+
             // 4. Reset vista mappa alle coordinate iniziali di Trieste
             window.map.setView([45.6495, 13.7768], 13, {
                 animate: true,
                 duration: 1.0
             });
-            
+
             // 4. Carica tutte le linee disponibili per la vista panoramica
             /*
             setTimeout(() => {
                 loadAllLines();
             }, 1200); // Aspetta che la vista si resetti prima di caricare le linee
             */
-            
+
             // 5. Feedback visivo
             showToast("Vista panoramica", "#007bff");
         }
@@ -342,11 +347,11 @@
         // Funzione per rimuovere marker di geolocalizzazione
         function clearLocationMarkers() {
             // Cerca e rimuovi tutti i marker con l'icona personalizzata "imhere.png"
-            window.map.eachLayer(function(layer) {
+            window.map.eachLayer(function (layer) {
                 if (layer instanceof L.Marker) {
                     // Controlla se è un marker di geolocalizzazione
-                    if (layer.options.icon && layer.options.icon.options && 
-                        layer.options.icon.options.iconUrl && 
+                    if (layer.options.icon && layer.options.icon.options &&
+                        layer.options.icon.options.iconUrl &&
                         layer.options.icon.options.iconUrl.includes('imhere.png')) {
                         window.map.removeLayer(layer);
                     }
@@ -409,10 +414,10 @@
         }
 
         // Genera la lista e inizializza il sistema parametrico quando la pagina è caricata
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Genera la lista delle linee basata sulla configurazione parametrica
             generateBusList();
-            
+
             // Verifica che il sistema parametrico sia caricato
             if (typeof getAvailableLines === 'function') {
                 console.log('✅ Sistema parametrico caricato correttamente!');
@@ -422,7 +427,7 @@
                 console.error('❌ Errore: Sistema parametrico non caricato');
                 showToast("Errore: Sistema non disponibile", "#dc3545");
             }
-            
+
             // Opzionale: Carica tutte le linee per la vista panoramica iniziale
             // setTimeout(() => {
             //     loadAllLines();
@@ -432,28 +437,28 @@
 
     <script>
         // Funzioni per il pannello informativo della linea
-        
+
         function showLineInfoPanel(lineNumber, lineColor, stops) {
             const panel = document.getElementById('line-info-panel');
             const lineNameElement = document.getElementById('line-name');
             const colorIndicator = document.getElementById('line-color-indicator');
             const stopsList = document.getElementById('stops-list');
-            
+
             // Imposta il nome e colore della linea
             lineNameElement.textContent = `Linea ${lineNumber}`;
             colorIndicator.style.backgroundColor = lineColor;
-            
+
             // Pulisce e popola la lista fermate
             stopsList.innerHTML = '';
-            
+
             if (stops && stops.length > 0) {
                 stops.forEach((stop, index) => {
                     const li = document.createElement('li');
                     const stopName = stop.tags && stop.tags.name ? stop.tags.name : `Fermata ${lineNumber} - ${index + 1}`;
                     li.innerHTML = `<span class="stop-name">${stopName}</span>`;
-                    
+
                     // Aggiunge click per centrare la mappa sulla fermata
-                    li.addEventListener('click', function() {
+                    li.addEventListener('click', function () {
                         if (stop.lat && stop.lon) {
                             window.map.setView([stop.lat, stop.lon], 16, {
                                 animate: true,
@@ -462,7 +467,7 @@
                             showToast(`Centrato su: ${stopName}`, lineColor);
                         }
                     });
-                    
+
                     stopsList.appendChild(li);
                 });
             } else {
@@ -470,41 +475,41 @@
                 li.innerHTML = '<span class="stop-name">Caricamento fermate...</span>';
                 stopsList.appendChild(li);
             }
-            
+
             // Mostra il pannello
             panel.classList.add('active');
         }
-        
+
         function closeLineInfoPanel() {
             const panel = document.getElementById('line-info-panel');
             panel.classList.remove('active');
-            
+
             // Nasconde tutte le linee e fermate quando si chiude il pannello
             hideAllLinesWithoutClosingPanel();
         }
-        
+
         // Funzione helper che nasconde le linee senza chiudere il pannello (Sistema parametrico)
         function hideAllLinesWithoutClosingPanel() {
             // Ottieni tutte le linee disponibili e rimuovi i loro layer
             const allLineNumbers = getAvailableLines();
-            
+
             allLineNumbers.forEach(lineNumber => {
                 // Rimuovi layer del percorso
                 const routeLayerName = `routeLayer${lineNumber}`;
                 if (window[routeLayerName] && window.map.hasLayer(window[routeLayerName])) {
                     window.map.removeLayer(window[routeLayerName]);
                 }
-                
+
                 // Rimuovi layer delle fermate
                 const busStopsLayerName = `busStopsLayer${lineNumber}`;
                 if (window[busStopsLayerName] && window.map.hasLayer(window[busStopsLayerName])) {
                     window.map.removeLayer(window[busStopsLayerName]);
                 }
-                
+
                 // Rimuovi layer andata/ritorno se esistono
                 const andataLayerName = `busStopsLayer${lineNumber}_A`;
                 const ritornoLayerName = `busStopsLayer${lineNumber}_R`;
-                
+
                 if (window[andataLayerName] && window.map.hasLayer(window[andataLayerName])) {
                     window.map.removeLayer(window[andataLayerName]);
                 }
@@ -518,28 +523,28 @@
                 window.map.removeLayer(window.activeBusStopsLayer);
             }
         }
-        
+
         // Funzione per aggiornare il pannello con le fermate quando sono disponibili
         function updateLineInfoPanel(stops) {
             const stopsList = document.getElementById('stops-list');
             const panel = document.getElementById('line-info-panel');
-            
+
             if (panel.classList.contains('active')) {
                 // Ottieni il numero della linea attuale dal titolo
                 const lineNameElement = document.getElementById('line-name');
                 const lineNumber = lineNameElement.textContent.replace('Linea ', '');
                 const lineColor = document.getElementById('line-color-indicator').style.backgroundColor;
-                
+
                 stopsList.innerHTML = '';
-                
+
                 if (stops && stops.length > 0) {
                     stops.forEach((stop, index) => {
                         const li = document.createElement('li');
                         const stopName = stop.tags && stop.tags.name ? stop.tags.name : `Fermata ${lineNumber} - ${index + 1}`;
                         li.innerHTML = `<span class="stop-name">${stopName}</span>`;
-                        
+
                         // Aggiunge click per centrare la mappa sulla fermata
-                        li.addEventListener('click', function() {
+                        li.addEventListener('click', function () {
                             if (stop.lat && stop.lon) {
                                 window.map.setView([stop.lat, stop.lon], 16, {
                                     animate: true,
@@ -548,7 +553,7 @@
                                 showToast(`Centrato su: ${stopName}`, lineColor);
                             }
                         });
-                        
+
                         stopsList.appendChild(li);
                     });
                 } else {
@@ -558,7 +563,7 @@
                 }
             }
         }
-        
+
         // Funzione per caricare le fermate nel pannello da una linea specifica (Sistema parametrico)
         function loadStopsForPanel(lineNumber) {
             // Usa la configurazione parametrica per ottenere gli ID delle relazioni
@@ -567,16 +572,16 @@
                 console.error(`Configurazione non trovata per la linea ${lineNumber}`);
                 return;
             }
-            
+
             const relationIds = `${config.relations.andata},${config.relations.ritorno}`;
-            
+
             const query = `[out:json];
-rel(id:${relationIds});
-node(r)->.stops;
-.stops out body;`;
-            
+                rel(id:${relationIds}); 
+                node(r)->.stops;
+                .stops out body;`;
+
             const url = "https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(query);
-            
+
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
@@ -588,38 +593,43 @@ node(r)->.stops;
                     console.error("Errore nel caricamento fermate per pannello:", error);
                 });
         }
-        
+
         // Funzione per aggiornare il pannello informativo con fermate ordinate
         function updateLineInfoPanelWithOrderedStops(lineNumber, lineColor, direction, orderedStops) {
             const panel = document.getElementById('line-info-panel');
             const lineNameElement = document.getElementById('line-name');
             const colorIndicator = document.getElementById('line-color-indicator');
             const stopsList = document.getElementById('stops-list');
-            
+
             // Imposta il nome e colore della linea
             lineNameElement.textContent = `Linea ${lineNumber}`;
             colorIndicator.style.backgroundColor = lineColor;
-            
+
             // Pulisce la lista
             stopsList.innerHTML = '';
-            
+
+            // Ottieni il nome della direzione dalla configurazione
+            const config = getLineConfig(lineNumber);
+            const directionKey = direction.toLowerCase().includes('andata') ? 'andata' : 'ritorno';
+            const directionLabel = config?.directions?.[directionKey] || direction;
+
             // Header della direzione
             const directionHeader = document.createElement('li');
             directionHeader.className = 'direction-header';
             directionHeader.innerHTML = `
                 <strong style="color: ${lineColor}; display: flex; align-items: center; margin-bottom: 10px;">
                     <span style="width: 12px; height: 12px; border-radius: 50%; background-color: ${lineColor}; margin-right: 8px;"></span>
-                    ${direction} (${orderedStops.length} fermate)
+                    ${directionLabel} (${orderedStops.length} fermate)
                 </strong>
             `;
             stopsList.appendChild(directionHeader);
-            
+
             // Lista fermate ordinate
             orderedStops.forEach((stop) => {
                 const stopItem = document.createElement('li');
                 stopItem.className = 'stop-item';
                 const stopName = stop.tags?.name || `Fermata ${stop.id}`;
-                
+
                 stopItem.innerHTML = `
                     <div style="display: flex; align-items: center; padding: 8px 12px; cursor: pointer;">
                         <span style="
@@ -644,9 +654,9 @@ node(r)->.stops;
                         </div>
                     </div>
                 `;
-                
+
                 // Aggiunge click per centrare la mappa sulla fermata
-                stopItem.addEventListener('click', function() {
+                stopItem.addEventListener('click', function () {
                     if (stop.lat && stop.lon) {
                         window.map.setView([stop.lat, stop.lon], 16, {
                             animate: true,
@@ -655,28 +665,28 @@ node(r)->.stops;
                         showToast(`Centrato su: ${stopName}`, "blue");
                     }
                 });
-                
+
                 stopsList.appendChild(stopItem);
             });
-            
+
             // Mostra il pannello
             panel.classList.add('active');
         }
-        
+
         // Funzione per aggiornare il pannello informativo della linea 17 con entrambe le direzioni
         function updateLineInfoPanelWithBothDirections17(orderedStopsAndata, orderedStopsRitorno) {
             const panel = document.getElementById('line-info-panel');
             const lineNameElement = document.getElementById('line-name');
             const colorIndicator = document.getElementById('line-color-indicator');
             const stopsList = document.getElementById('stops-list');
-            
+
             // Imposta il nome e colore della linea
             lineNameElement.textContent = `Linea 17`;
             colorIndicator.style.backgroundColor = "blue";
-            
+
             // Pulisce la lista
             stopsList.innerHTML = '';
-            
+
             // Header ANDATA
             const andataHeader = document.createElement('li');
             andataHeader.className = 'direction-header';
@@ -687,13 +697,13 @@ node(r)->.stops;
                 </strong>
             `;
             stopsList.appendChild(andataHeader);
-            
+
             // Lista fermate andata ordinate
             orderedStopsAndata.forEach((stop) => {
                 const stopItem = document.createElement('li');
                 stopItem.className = 'stop-item';
                 const stopName = stop.tags?.name || `Fermata ${stop.id}`;
-                
+
                 stopItem.innerHTML = `
                     <div style="display: flex; align-items: center; padding: 8px 12px; cursor: pointer;">
                         <span style="
@@ -718,9 +728,9 @@ node(r)->.stops;
                         </div>
                     </div>
                 `;
-                
+
                 // Aggiunge click per centrare la mappa sulla fermata
-                stopItem.addEventListener('click', function() {
+                stopItem.addEventListener('click', function () {
                     if (stop.lat && stop.lon) {
                         window.map.setView([stop.lat, stop.lon], 16, {
                             animate: true,
@@ -729,15 +739,15 @@ node(r)->.stops;
                         showToast(`Centrato su: ${stopName}`, "blue");
                     }
                 });
-                
+
                 stopsList.appendChild(stopItem);
             });
-            
+
             // Separatore
             const separator1 = document.createElement('li');
             separator1.style.height = '10px';
             stopsList.appendChild(separator1);
-            
+
             // Header RITORNO
             const ritornoHeader = document.createElement('li');
             ritornoHeader.className = 'direction-header';
@@ -748,13 +758,13 @@ node(r)->.stops;
                 </strong>
             `;
             stopsList.appendChild(ritornoHeader);
-            
+
             // Lista fermate ritorno ordinate
             orderedStopsRitorno.forEach((stop) => {
                 const stopItem = document.createElement('li');
                 stopItem.className = 'stop-item';
                 const stopName = stop.tags?.name || `Fermata ${stop.id}`;
-                
+
                 stopItem.innerHTML = `
                     <div style="display: flex; align-items: center; padding: 8px 12px; cursor: pointer;">
                         <span style="
@@ -779,9 +789,9 @@ node(r)->.stops;
                         </div>
                     </div>
                 `;
-                
+
                 // Aggiunge click per centrare la mappa sulla fermata
-                stopItem.addEventListener('click', function() {
+                stopItem.addEventListener('click', function () {
                     if (stop.lat && stop.lon) {
                         window.map.setView([stop.lat, stop.lon], 16, {
                             animate: true,
@@ -790,14 +800,14 @@ node(r)->.stops;
                         showToast(`Centrato su: ${stopName}`, "blue");
                     }
                 });
-                
+
                 stopsList.appendChild(stopItem);
             });
-            
+
             // Mostra il pannello
             panel.classList.add('active');
         }
-        
+
         // Funzione generica per aggiornare il pannello con entrambe le direzioni
         function updateLineInfoPanelWithBothDirections(lineNumber, orderedStopsAndata, orderedStopsRitorno) {
             const config = getLineConfig(lineNumber);
@@ -805,36 +815,37 @@ node(r)->.stops;
                 console.error(`Configurazione non trovata per la linea ${lineNumber}`);
                 return;
             }
-            
+
             const panel = document.getElementById('line-info-panel');
             const lineNameElement = document.getElementById('line-name');
             const colorIndicator = document.getElementById('line-color-indicator');
             const stopsList = document.getElementById('stops-list');
-            
+
             // Imposta il nome e colore della linea
             lineNameElement.textContent = `Linea ${lineNumber}`;
             colorIndicator.style.backgroundColor = config.color;
-            
+
             // Pulisce la lista
             stopsList.innerHTML = '';
-            
+
             // Header ANDATA
             const andataHeader = document.createElement('li');
             andataHeader.className = 'direction-header';
+            const andataLabel = config.directions?.andata || "ANDATA";
             andataHeader.innerHTML = `
                 <strong style="color: ${config.color}; display: flex; align-items: center; margin-bottom: 10px;">
                     <span style="width: 12px; height: 12px; border-radius: 50%; background-color: ${config.color}; margin-right: 8px;"></span>
-                    ANDATA (${orderedStopsAndata.length} fermate)
+                    ${andataLabel} (${orderedStopsAndata.length} fermate)
                 </strong>
             `;
             stopsList.appendChild(andataHeader);
-            
+
             // Lista fermate andata ordinate
             orderedStopsAndata.forEach((stop) => {
                 const stopItem = document.createElement('li');
                 stopItem.className = 'stop-item';
                 const stopName = stop.tags?.name || `Fermata ${stop.id}`;
-                
+
                 stopItem.innerHTML = `
                     <div style="display: flex; align-items: center; padding: 8px 12px; cursor: pointer;">
                         <span style="
@@ -859,9 +870,9 @@ node(r)->.stops;
                         </div>
                     </div>
                 `;
-                
+
                 // Aggiunge click per centrare la mappa sulla fermata
-                stopItem.addEventListener('click', function() {
+                stopItem.addEventListener('click', function () {
                     if (stop.lat && stop.lon) {
                         window.map.setView([stop.lat, stop.lon], 16, {
                             animate: true,
@@ -870,32 +881,33 @@ node(r)->.stops;
                         showToast(`Centrato su: ${stopName}`, config.color);
                     }
                 });
-                
+
                 stopsList.appendChild(stopItem);
             });
-            
+
             // Separatore
             const separator1 = document.createElement('li');
             separator1.style.height = '10px';
             stopsList.appendChild(separator1);
-            
+
             // Header RITORNO
             const ritornoHeader = document.createElement('li');
             ritornoHeader.className = 'direction-header';
+            const ritornoLabel = config.directions?.ritorno || "RITORNO";
             ritornoHeader.innerHTML = `
                 <strong style="color: ${config.color}; display: flex; align-items: center; margin-bottom: 10px;">
                     <span style="width: 12px; height: 12px; border-radius: 50%; background-color: ${config.color}; margin-right: 8px;"></span>
-                    RITORNO (${orderedStopsRitorno.length} fermate)
+                    ${ritornoLabel} (${orderedStopsRitorno.length} fermate)
                 </strong>
             `;
             stopsList.appendChild(ritornoHeader);
-            
+
             // Lista fermate ritorno ordinate
             orderedStopsRitorno.forEach((stop) => {
                 const stopItem = document.createElement('li');
                 stopItem.className = 'stop-item';
                 const stopName = stop.tags?.name || `Fermata ${stop.id}`;
-                
+
                 stopItem.innerHTML = `
                     <div style="display: flex; align-items: center; padding: 8px 12px; cursor: pointer;">
                         <span style="
@@ -920,9 +932,9 @@ node(r)->.stops;
                         </div>
                     </div>
                 `;
-                
+
                 // Aggiunge click per centrare la mappa sulla fermata
-                stopItem.addEventListener('click', function() {
+                stopItem.addEventListener('click', function () {
                     if (stop.lat && stop.lon) {
                         window.map.setView([stop.lat, stop.lon], 16, {
                             animate: true,
@@ -931,10 +943,10 @@ node(r)->.stops;
                         showToast(`Centrato su: ${stopName}`, config.color);
                     }
                 });
-                
+
                 stopsList.appendChild(stopItem);
             });
-            
+
             // Mostra il pannello
             panel.classList.add('active');
         }
@@ -945,14 +957,14 @@ node(r)->.stops;
             const lineNameElement = document.getElementById('line-name');
             const colorIndicator = document.getElementById('line-color-indicator');
             const stopsList = document.getElementById('stops-list');
-            
+
             // Imposta il nome e colore della linea
             lineNameElement.textContent = `Linea 2`;
             colorIndicator.style.backgroundColor = "#FF6B35";
-            
+
             // Pulisce la lista
             stopsList.innerHTML = '';
-            
+
             // Header ANDATA
             const andataHeader = document.createElement('li');
             andataHeader.className = 'direction-header';
@@ -963,13 +975,13 @@ node(r)->.stops;
                 </strong>
             `;
             stopsList.appendChild(andataHeader);
-            
+
             // Lista fermate andata ordinate
             orderedStopsAndata.forEach((stop) => {
                 const stopItem = document.createElement('li');
                 stopItem.className = 'stop-item';
                 const stopName = stop.tags?.name || `Fermata ${stop.id}`;
-                
+
                 stopItem.innerHTML = `
                     <div style="display: flex; align-items: center; padding: 8px 12px; cursor: pointer;">
                         <span style="
@@ -994,9 +1006,9 @@ node(r)->.stops;
                         </div>
                     </div>
                 `;
-                
+
                 // Aggiunge click per centrare la mappa sulla fermata
-                stopItem.addEventListener('click', function() {
+                stopItem.addEventListener('click', function () {
                     if (stop.lat && stop.lon) {
                         window.map.setView([stop.lat, stop.lon], 16, {
                             animate: true,
@@ -1005,15 +1017,15 @@ node(r)->.stops;
                         showToast(`Centrato su: ${stopName}`, "#FF6B35");
                     }
                 });
-                
+
                 stopsList.appendChild(stopItem);
             });
-            
+
             // Separatore
             const separator1 = document.createElement('li');
             separator1.style.height = '10px';
             stopsList.appendChild(separator1);
-            
+
             // Header RITORNO
             const ritornoHeader = document.createElement('li');
             ritornoHeader.className = 'direction-header';
@@ -1024,13 +1036,13 @@ node(r)->.stops;
                 </strong>
             `;
             stopsList.appendChild(ritornoHeader);
-            
+
             // Lista fermate ritorno ordinate
             orderedStopsRitorno.forEach((stop) => {
                 const stopItem = document.createElement('li');
                 stopItem.className = 'stop-item';
                 const stopName = stop.tags?.name || `Fermata ${stop.id}`;
-                
+
                 stopItem.innerHTML = `
                     <div style="display: flex; align-items: center; padding: 8px 12px; cursor: pointer;">
                         <span style="
@@ -1055,9 +1067,9 @@ node(r)->.stops;
                         </div>
                     </div>
                 `;
-                
+
                 // Aggiunge click per centrare la mappa sulla fermata
-                stopItem.addEventListener('click', function() {
+                stopItem.addEventListener('click', function () {
                     if (stop.lat && stop.lon) {
                         window.map.setView([stop.lat, stop.lon], 16, {
                             animate: true,
@@ -1066,10 +1078,10 @@ node(r)->.stops;
                         showToast(`Centrato su: ${stopName}`, "#FF6B35");
                     }
                 });
-                
+
                 stopsList.appendChild(stopItem);
             });
-            
+
             // Mostra il pannello
             panel.classList.add('active');
         }
@@ -1080,10 +1092,10 @@ node(r)->.stops;
         if (localStorage.getItem("theme") === "dark") {
             document.body.classList.add("dark-mode");
         }
-    
+
         function toggleTheme() {
             document.body.classList.toggle("dark-mode");
-    
+
             // Salva la preferenza dell'utente
             if (document.body.classList.contains("dark-mode")) {
                 localStorage.setItem("theme", "dark");
@@ -1093,4 +1105,5 @@ node(r)->.stops;
         }
     </script>
 </body>
+
 </html>
